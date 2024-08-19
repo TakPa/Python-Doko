@@ -9,6 +9,7 @@ from PlayingCards import CardFamily
 class Game:
     _playerlist: list[DokoPlayer]
     _fulldeck : FullDeck
+    _game_type: GameType
 
     @property
     def playerlist(self):
@@ -18,15 +19,24 @@ class Game:
     def fulldeck(self):
         return self._fulldeck
 
+    @property
+    def game_type(self):
+        return self._game_type
+
     @playerlist.setter
     def playerlist(self, iterable: List[DokoPlayer]):
         self._playerlist = iterable
 
+
+    @game_type.setter
+    def game_type(self, new_type:GameType):
+        self._game_type = new_type
     def __init__(self):
         self._fulldeck : FullDeck = FullDeck()
         self._fulldeck.sort(reverse=True)
 
         self.playerlist  = self._create_playerlist()
+        self.game_type = GameType.NORMAL
 
     def _create_playerlist(self):
         playerlist = []
@@ -49,10 +59,13 @@ class Game:
     def change_gametype(self, gametype: GameType):
         for player in self.playerlist:
             player.change_gametype(gametype)
+        self.game_type = gametype
+
 
 
 if __name__ == '__main__':
     game = Game()
+    print(game.game_type)
 
     for player in game.playerlist:
         print(f'{player}')

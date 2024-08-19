@@ -43,7 +43,7 @@ class Card:
 
     @property
     def image(self):
-        return f'{Card.ImagePath}{self.family.name.capitalize()}_{self.face.name.capitalize()}.jpg'
+        return f'{Card.ImagePath}{self.family.name.capitalize()}_{self.face.name.capitalize()}.gif'
 
     @family.setter
     def family(self, value):

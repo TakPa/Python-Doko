@@ -24,7 +24,7 @@ class GameType(Enum):
 
     @property
     def is_normal_game(self) -> bool:
-        return self == GameType.NORMAL or self == GameType.NORMAL or self == GameType.NORMAL
+        return self == GameType.NORMAL or self == GameType.HOCHZEIT or self == GameType.ABGABE
 
 
 class DokoCard(Card):

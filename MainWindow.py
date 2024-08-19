@@ -3,15 +3,15 @@ from ctypes import windll
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QGridLayout, QPushButton
+from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QGridLayout, QPushButton, QComboBox
 
 from game import *
-import DokoCards
 
 
 class MainWindow(QWidget):
+    Karten: List[QLabel] = []
+    _game_type_box: QComboBox = QComboBox()
 
-    Karten: [QLabel] = []
     @property
     def game(self):
         return self._game
@@ -35,7 +35,7 @@ class MainWindow(QWidget):
             name: str = f'{plyer} :'
             row: int = plyer.player_id * 2
             layout.addWidget(QLabel(name), row, 0)
-            for index in range(len(plyer.Deck)) :
+            for index in range(len(plyer.Deck)):
                 layout.addWidget(self.Karten[plyer.player_id * 10 + index], row + 1, index)
 
         # buttons
@@ -49,36 +49,43 @@ class MainWindow(QWidget):
         layout.addWidget(button_close, 14, 9,
                          alignment=Qt.AlignmentFlag.AlignRight)
 
-        '''        
-        # username
-        #layout.addWidget(QLabel('Username:'), 0, 0)
-        #layout.addWidget(QLineEdit(), 0, 1)
+        for game_type in GameType:
+            self._game_type_box.addItem(game_type.name, userData=game_type)
+        self._game_type_box.setCurrentIndex(1)
+#        cbox.currentIndexChanged.connect(self.on_gametype_changed)
+        self._game_type_box.activated.connect(self.on_gametype_changed)
+        layout.addWidget(self._game_type_box, 0, 11)
 
-        # password
-        #layout.addWidget(QLabel('Password:'), 1, 0)
-        #layout.addWidget(QLineEdit(echoMode=QLineEdit.EchoMode.Password), 1, 1)
-
-        # show the window
-        '''
         self.show()
 
     def init_labels(self):
         for index in range(len(self.game.playerlist) * len(self.game.playerlist[0].Deck)):
-            self.Karten.append(QLabel ())
+            self.Karten.append(QLabel())
 
     def update_card_labels(self):
         for i in range(len(self.game.playerlist)):
             for j, crd in enumerate(self.game.playerlist[i].Deck):
-                index = i* 10 + j
+                index = i * 10 + j
                 self.Karten[index].setPixmap(QPixmap(crd.image))
 
     def on_new_game(self):
         self.game.new_game()
         self.update_card_labels()
+        self._game_type_box.setCurrentIndex(GameType.NORMAL.value)
 
     def on_close(self):
         self.close()
 
+    def on_gametype_changed(self, index: int):
+        current_game_type = self.game.game_type
+        new_game_type = GameType.NONE
+        for gt in GameType:
+            if gt.value == index:
+                new_game_type = gt
+                break
+        if new_game_type != current_game_type:
+            self.game.change_gametype(new_game_type)
+            self.update_card_labels()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
