@@ -16,11 +16,9 @@ class MainWindow(QWidget):
     def game(self):
         return self._game
 
-    # noinspection PyUnresolvedReferences
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-#        self._game_type_box = QComboBox()           
         self.setWindowTitle('Doppelkopf Test')
         # set the grid layout
         layout = QGridLayout()
@@ -42,11 +40,13 @@ class MainWindow(QWidget):
 
         # buttons
         button_change: QPushButton = QPushButton('New Game')
+        # noinspection PyUnresolvedReferences
         button_change.clicked.connect(self.on_new_game)
         layout.addWidget(button_change, 14, 0, 1, 2,
                          alignment=Qt.AlignmentFlag.AlignLeft)
 
         button_close: QPushButton = QPushButton('Close')
+        # noinspection PyUnresolvedReferences
         button_close.clicked.connect(self.on_close)
         layout.addWidget(button_close, 14, 9,
                          alignment=Qt.AlignmentFlag.AlignRight)
@@ -87,11 +87,13 @@ class MainWindow(QWidget):
 
     def on_activated(self, index: int):
         current_game_type = self.game.game_type
-        new_game_type = GameType.NONE
-        for gt in GameType:
-            if gt.value == index:
-                new_game_type = gt
-                break
+        new_game_type = GameType[self.cbox.currentText()] 
+
+#        for gt in GameType:
+#            if gt.value == index:
+#                new_game_type = gt
+#                break
+ 
         if new_game_type != current_game_type:
             self.game.change_gametype(new_game_type)
             self.update_card_labels()

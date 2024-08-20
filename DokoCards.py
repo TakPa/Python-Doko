@@ -60,20 +60,25 @@ class DokoCard(Card):
         priority = self.DB_ID
 
         if gametype != GameType.NONE:
-            if gametype.is_normal_game:
-                if self.family == CardFamily.HERZ and self.face == CardFace.ZEHN:
-                    priority += GamePriority.DULLE.value
-                elif self.face == CardFace.DAME:
-                    priority += GamePriority.DAME.value
-                elif self.face == CardFace.BUBE:
-                    priority += GamePriority.BUBE.value
-                elif self.family == CardFamily.KARO:
-                    priority += GamePriority.TRUMPF.value
-            elif gametype == GameType.DAMEN_SOLO and self.face == CardFace.DAME:
-                priority += GamePriority.DAME.value
-            elif gametype == GameType.BUBEN_SOLO and self.face == CardFace.BUBE:
-                priority += GamePriority.BUBE.value
-
+            match gametype:
+                case GameType.BUBEN_SOLO:
+                    if self.face == CardFace.BUBE:
+                        priority += GamePriority.BUBE.value
+                        
+                case GameType.DAMEN_SOLO:
+                    if self.face == CardFace.DAME:
+                        priority += GamePriority.DAME.value
+            
+                case _:
+                    if self.family == CardFamily.HERZ and self.face == CardFace.ZEHN:
+                        priority += GamePriority.DULLE.value
+                    elif self.face == CardFace.DAME:
+                        priority += GamePriority.DAME.value
+                    elif self.face == CardFace.BUBE:
+                        priority += GamePriority.BUBE.value
+                    elif self.family == CardFamily.KARO:
+                        priority += GamePriority.TRUMPF.value
+                        
         self.priority = priority
         self.is_trumpf = self.priority > GamePriority.TRUMPF.value
 
