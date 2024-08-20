@@ -57,7 +57,8 @@ class MainWindow(QWidget):
         self.cbox.setCurrentIndex(self.game.game_type.value)
         # noinspection PyUnresolvedReferences
         self.cbox.activated.connect(self.on_activated)
-        layout.addWidget(self.cbox, 0, 11)
+        layout.addWidget(QLabel('Game Type :'), 0, 11)
+        layout.addWidget(self.cbox, 0, 12)
 
         self.show()
 
@@ -72,8 +73,12 @@ class MainWindow(QWidget):
                 self.Karten[index].setPixmap(QPixmap(crd.image))
 
     def on_new_game(self):
-        self.on_activated(GameType.NORMAL.value)
-        self.cbox.setCurrentIndex(GameType.NORMAL.value)
+        game_type = GameType[self.cbox.currentText()]
+        if game_type != GameType.NORMAL:
+            self.cbox.setCurrentIndex(GameType.NORMAL.value)
+            if not game_type.is_normal_game:
+                self.on_activated(GameType.NORMAL.value)
+
         self.game.new_game()
         self.update_card_labels()
 

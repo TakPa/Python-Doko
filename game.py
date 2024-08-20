@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from typing import List, Any
+from typing import List, Dict, Any
 
-from DokoCards import FullDeck, GameType
+from DokoCards import DokoDeck, FullDeck, GameType
 from Player import DokoPlayer
 from PlayingCards import CardFamily
 
@@ -49,12 +49,12 @@ class Game:
     def new_game(self):
 
         self._fulldeck.shuffle_deck()
-#        self.change_gametype(GameType.NORMAL)
         for player in self.playerlist:
             player.Deck.clear()
             for i in range(10):
                 index = player.player_id * 10 + i
                 player.Deck.append(self._fulldeck[index])
+            player.change_gametype(GameType.NORMAL)
             player.Deck.sort(reverse=True)
 
     def change_gametype(self, gametype: GameType):
