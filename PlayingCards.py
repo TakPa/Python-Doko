@@ -67,6 +67,7 @@ class Card:
     def __str__(self) -> str:
         return f'{self.family.name.capitalize()}-{self.face.name.capitalize()}'
 
+    # noinspection PyUnresolvedReferences
     def __eq__(self, value: object) -> bool:
         if not isinstance(value, type(self)) and not isinstance(value, type(0)):
             return False

@@ -10,12 +10,13 @@ from game import *
 
 class MainWindow(QWidget):
     Karten: List[QLabel] = []
-#    cbox: QComboBox
+    cbox: QComboBox
 
     @property
     def game(self):
         return self._game
 
+    # noinspection PyUnresolvedReferences
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -54,6 +55,7 @@ class MainWindow(QWidget):
         for game_type in GameType:
             self.cbox.addItem(game_type.name, userData=game_type)
         self.cbox.setCurrentIndex(self.game.game_type.value)
+        # noinspection PyUnresolvedReferences
         self.cbox.activated.connect(self.on_activated)
         layout.addWidget(self.cbox, 0, 11)
 
@@ -88,6 +90,7 @@ class MainWindow(QWidget):
         if new_game_type != current_game_type:
             self.game.change_gametype(new_game_type)
             self.update_card_labels()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

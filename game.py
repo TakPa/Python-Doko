@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from typing import List, Dict, Any
+from typing import List, Any
 
-from DokoCards import DokoDeck, FullDeck, GameType
+from DokoCards import FullDeck, GameType
 from Player import DokoPlayer
 from PlayingCards import CardFamily
 
