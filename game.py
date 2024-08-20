@@ -49,6 +49,7 @@ class Game:
     def new_game(self):
 
         self._fulldeck.shuffle_deck()
+#        self.change_gametype(GameType.NORMAL)
         for player in self.playerlist:
             player.Deck.clear()
             for i in range(10):

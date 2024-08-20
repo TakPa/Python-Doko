@@ -3,6 +3,8 @@ from DokoCards import *
 
 
 class DokoPlayer:
+
+    Deck: Playerdeck = Playerdeck()
     @property
     def name(self):
         return self._name
@@ -10,7 +12,8 @@ class DokoPlayer:
     @property
     def player_id(self):
         return self._id
-    
+
+
     @name.setter
     def name(self, name: str):
         if not isinstance(name, str):

@@ -10,7 +10,7 @@ from game import *
 
 class MainWindow(QWidget):
     Karten: List[QLabel] = []
-    _game_type_box: QComboBox = QComboBox()
+#    cbox: QComboBox
 
     @property
     def game(self):
@@ -19,6 +19,7 @@ class MainWindow(QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+#        self._game_type_box = QComboBox()           
         self.setWindowTitle('Doppelkopf Test')
         # set the grid layout
         layout = QGridLayout()
@@ -49,12 +50,12 @@ class MainWindow(QWidget):
         layout.addWidget(button_close, 14, 9,
                          alignment=Qt.AlignmentFlag.AlignRight)
 
+        self.cbox = QComboBox()
         for game_type in GameType:
-            self._game_type_box.addItem(game_type.name, userData=game_type)
-        self._game_type_box.setCurrentIndex(1)
-#        cbox.currentIndexChanged.connect(self.on_gametype_changed)
-        self._game_type_box.activated.connect(self.on_gametype_changed)
-        layout.addWidget(self._game_type_box, 0, 11)
+            self.cbox.addItem(game_type.name, userData=game_type)
+        self.cbox.setCurrentIndex(self.game.game_type.value)
+        self.cbox.activated.connect(self.on_activated)
+        layout.addWidget(self.cbox, 0, 11)
 
         self.show()
 
@@ -69,14 +70,15 @@ class MainWindow(QWidget):
                 self.Karten[index].setPixmap(QPixmap(crd.image))
 
     def on_new_game(self):
+        self.on_activated(GameType.NORMAL.value)
+        self.cbox.setCurrentIndex(GameType.NORMAL.value)
         self.game.new_game()
         self.update_card_labels()
-        self._game_type_box.setCurrentIndex(GameType.NORMAL.value)
 
     def on_close(self):
         self.close()
 
-    def on_gametype_changed(self, index: int):
+    def on_activated(self, index: int):
         current_game_type = self.game.game_type
         new_game_type = GameType.NONE
         for gt in GameType:
