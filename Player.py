@@ -31,19 +31,43 @@ class DokoPlayer:
             raise ValueError("ID muss numerisch sein")
         self.name = name
         self.player_id = player_id
-        self.Deck = Playerdeck()
+        self.Deck: Playerdeck = Playerdeck()
         
     def __str__(self) -> str:
         return f'{self.name}_{self.player_id}'
 
+    def init_new_game(self):
+        self.Deck.clear()
+        
     def change_gametype(self, gametype: GameType) -> None:
         for karte in self.Deck:
             karte.switch_gametype(gametype)
         self.Deck.sort(reverse=True)
 
+    @property
+    def is_re_partner(self) ->bool:
+         re_dame = DokoCard(CardFamily.KREUZ, CardFace.DAME)
+         return re_dame in self.Deck
+
+    @property
+    def has_abgabe(self) ->bool:
+        matches: int = 0
+        for crd in self.Deck:
+            if crd.is_trumpf:
+                matches +=1
+                if matches > 3:
+                    return False
+        return True
+
+    @property
+    def has_five_kings(self) ->bool:
+        return len([crd for crd in self.Deck if crd.face == CardFace.KOENIG]) > 4
+
+    @property
+    def has_hochzeit(self) ->bool:
+        return len([crd for crd in self.Deck if crd.family == CardFamily.KREUZ and crd.face == CardFace.DAME]) > 1
+
 if __name__ == '__main__':
-    player = DokoPlayer('Player', 0)
-    print(player)
     
     doko_game = []
     for i in range(4):
@@ -56,16 +80,34 @@ if __name__ == '__main__':
     new_cards.shuffle_deck()
     
     for player in doko_game:
+        player.init_new_game()
         for i in range(10):
             index = player.player_id * 10 + i
             player.Deck.append(new_cards[index])
             
     print()
     for player in doko_game:
-        print(f'{player}:')
         player.Deck.sort(reverse=True)
+        partner ='KONTRA'
+        if player.is_re_partner:
+            if player.has_hochzeit:
+                partner = 'HOCHZEIT'
+            else:
+                partner = 'RE'
+
+        
+        abgabe = ''
+        if player.has_abgabe:
+            abgabe = ' ABGABE '
+            
+        five_kings = ''    
+        if player.has_five_kings:
+            five_kings = 'Fünf Könige'
         msg = ''
         for card in player.Deck:
+            
             msg += f'{card} '
+
+        print(f'{player}:  {partner}  {abgabe}  {five_kings}' )
         print(msg)
     

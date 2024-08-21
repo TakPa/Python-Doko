@@ -50,7 +50,8 @@ class Game:
 
         self._fulldeck.shuffle_deck()
         for player in self.playerlist:
-            player.Deck.clear()
+            player.init_new_game()
+            #player.Deck.clear()
             for i in range(10):
                 index = player.player_id * 10 + i
                 player.Deck.append(self._fulldeck[index])
@@ -84,7 +85,7 @@ if __name__ == '__main__':
         for card in player.Deck:
             str_deck += f'{card} '
         print(str_deck)
-        trumpf_count = sum(map(lambda karte: karte.is_trumpf == True, player.Deck))
+        trumpf_count = sum(map(lambda karte: karte.is_trumpf, player.Deck))
         count_family: list[dict[Any, Any]] = []
         for family in  CardFamily:
             count = sum(map(lambda karte: karte.family == family and karte.is_trumpf == False, player.Deck))

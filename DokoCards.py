@@ -30,6 +30,8 @@ class GameType(Enum):
 class DokoCard(Card):
     __slots__ = ('_priority', '_is_trumpf')
 
+    
+    
     @property
     def priority(self):
         return self._priority
@@ -46,8 +48,8 @@ class DokoCard(Card):
     def is_trumpf(self, value):
         self._is_trumpf = value
 
-    def __init__(self, family: CardFamily, face: CardFace) -> None:
-        super().__init__(family, face)
+    def __init__(self, _family: CardFamily, _face: CardFace) -> None:
+        super().__init__(_family, _face)
         self._priority: int = 0
         self._is_trumpf: bool = False
         self.switch_gametype(GameType.NORMAL)
