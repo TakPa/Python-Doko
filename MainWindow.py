@@ -13,7 +13,7 @@ import PlayerWidget
 class MainWindow(QWidget):
     Karten: List[QLabel] = []
     cbox: QComboBox
-    Player: List[PlayerWidget.Players_Header] = []
+    Player: List[PlayerWidget.PlayersHeader] = []
     
     @property
     def game(self):
@@ -36,13 +36,13 @@ class MainWindow(QWidget):
 
         plyer: DokoPlayer
         for plyer in self.game.playerlist:
-            self.Player.append(PlayerWidget.Players_Header(plyer))
+            self.Player.append(PlayerWidget.PlayersHeader(plyer))
             
             
             name: str = f'{plyer} :'
             row: int = plyer.player_id * 3
             child_layout = self.Player[plyer.player_id].player_layout
-            layout.addLayout(self.Player[plyer.player_id].player_layout, row, 0, 1, 8)
+            layout.addLayout(self.Player[plyer.player_id].player_layout, row, 0, 2, 8)
             
             for index in range(len(plyer.Deck)):
                 layout.addWidget(self.Karten[plyer.player_id * 10 + index], row + 2, index)

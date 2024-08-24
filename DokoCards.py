@@ -150,6 +150,7 @@ class FullDeck(DokoDeck):
     def shuffle_deck(self):
         random.shuffle(self.data)
 
+
 class Playerdeck(DokoDeck):
 
     def __init__(self):

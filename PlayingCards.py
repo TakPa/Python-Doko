@@ -63,7 +63,6 @@ class Card:
         self.family = family
         self.face = face
         
-
     def __str__(self) -> str:
         return f'{self.family.name.capitalize()}-{self.face.name.capitalize()}'
 
