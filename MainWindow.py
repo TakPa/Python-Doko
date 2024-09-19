@@ -5,16 +5,15 @@ from PyQt6 import QtWidgets, QtCore
 from player_widget import Players
 from game_option_widget import OptionBox
 
-from game import GameType
+from DokoCards import GameType
 
 
 class MainWindow(QtWidgets.QMainWindow):
     option_buttons: list[QtWidgets.QRadioButton] = []
 
-    
-    @pyqtSlot()
-    def on_game_type_changed(self,gametype):
-        print ('signal received')
+    @pyqtSlot(GameType)
+    def game_type_changed(self,gametype):
+        print (f'signal received: {gametype}')
     
     
     def __init__(self, *args, **kwargs):
@@ -52,7 +51,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # noinspection PyUnresolvedReferences
         self.button_close.clicked.connect(self.close)
         child_layout.addWidget(self.button_close,alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-        layout.addLayout(child_layout, 10, 0, 1, 10)
+        layout.addLayout(child_layout, 10, 0, 1, 11)
 
         options_layout =QtWidgets.QVBoxLayout()
 
@@ -85,7 +84,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                          "border: 3px solid gray;"
                                           "margin-top: 8px")
 
-        self.optionbox.game_type_changed.connect(self.on_game_type_changed)
+        self.optionbox.game_type_changed.connect(self.game_type_changed)
 
         layout.addWidget(OptionBox('GameType :'), 3 ,10,)
 
@@ -93,9 +92,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(self.central_widget)
                  
     
-    def on_game_type_changed(self, gametype):
-        print ('signal received')
-        
     def on_options_clicked(self):
         rb:QtWidgets.QRadioButton
 
