@@ -17,7 +17,7 @@ class OptionBox(QtWidgets.QGroupBox):
     
     @pyqtSlot(GameType)
     def type_changed_received(self, gametype):
-        print('game type changed received')
+        print(f'game type changed received :{gametype}')
     
     def on_game_type_changed(self,gametype):
         if type(self.sender()) is QtWidgets.QRadioButton:
@@ -28,45 +28,53 @@ class OptionBox(QtWidgets.QGroupBox):
     game_type_changed = QtCore.pyqtSignal(GameType, name='game_type_changed')    
     
     
-    option_button: list[QtWidgets.QRadioButton] = []
+    option_buttons: list[QtWidgets.QRadioButton] = []
 
     def __init__(self, titel):
         super().__init__(titel)
         
 
         options = self.game_types.keys()
-        self.option_button.clear()
-        self.setTitle(titel)
+        self.option_buttons.clear()
+        self.setTitle(titel) 
+        self.setMinimumSize(130, 220)
         self.setStyleSheet(
                                          "color: navy;"
                                          "font-weight: bold;"
-                                         "border: 3px solid gray;"
+                                         "border: 2px solid gray;"
                                           "margin-top: 8px")
         for index, key in enumerate(options):
             button = QtWidgets.QRadioButton(key)
             button.setStyleSheet("background-color: moccasin; color: black; font-weight: bold;")
             # noinspection PyUnresolvedReferences
-            self.option_button.append(button)
-        self.option_button[0].setChecked(True)
+            self.option_buttons.append(button)
+        self.option_buttons[0].setChecked(True)
         
         options_layout =QtWidgets.QVBoxLayout()
-        for button in self.option_button:
+        for button in self.option_buttons:
             button.toggled.connect(self.on_options_toggled)
             button.toggled.connect(self.on_game_type_changed)
             options_layout.addWidget(button)
 
         self.setLayout(options_layout)
-        self.game_type_changed.connect(self.game_type_changed)        
+        self.game_type_changed.connect(self.type_changed_received)        
         
     def on_options_toggled(self):
         if type(self.sender()) is QtWidgets.QRadioButton:
             rb = self.sender()
             if rb.isChecked():
-                
                 print(f"Game Type {GameType[rb.text().upper()]} clicked")
-                self.game_type_changed.emit(GameType[rb.text().upper()])
-                print (f'{GameType[rb.text().upper()]} emitted')
 
+    def init_options(self):
+        options = self.game_types.keys()
+        self.option_buttons.clear()
+        for index, key in enumerate(options):
+            button = QtWidgets.QRadioButton(key)
+            button.setStyleSheet("background-color: moccasin; color: black; font-weight: bold;")
+            # noinspection PyUnresolvedReferences
+            self.option_buttons.append(button)
+            self.option_group.addWidget(self.option_buttons[index])
+            
         
 
     """         self.setStyleSheet("background-color: rebeccapurple;"
@@ -76,15 +84,5 @@ class OptionBox(QtWidgets.QGroupBox):
                                          "margin-top: 1px")
     """
 
-    def init_options(self):
-        options = self.game_types.keys()
-        self.option_button.clear()
-        for index, key in enumerate(options):
-            button = QtWidgets.QRadioButton(key)
-            button.setStyleSheet("background-color: moccasin; color: black; font-weight: bold;")
-            # noinspection PyUnresolvedReferences
-            self.option_button.append(button)
-            self.option_group.addWidget(self.option_button[index])
-            
 
 
