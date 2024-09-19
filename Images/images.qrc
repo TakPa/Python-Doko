@@ -1,0 +1,24 @@
+<RCC>
+  <qresource prefix="img">
+    <file>Herz_As.gif</file>
+    <file>Herz_Bube.gif</file>
+    <file>Herz_Dame.gif</file>
+    <file>Herz_Koenig.gif</file>
+    <file>Herz_Zehn.gif</file>
+    <file>Karo_As.gif</file>
+    <file>Karo_Bube.gif</file>
+    <file>Karo_Dame.gif</file>
+    <file>Karo_Koenig.gif</file>
+    <file>Karo_Zehn.gif</file>
+    <file>Kreuz_As.gif</file>
+    <file>Kreuz_Bube.gif</file>
+    <file>Kreuz_Dame.gif</file>
+    <file>Kreuz_Koenig.gif</file>
+    <file>Kreuz_Zehn.gif</file>
+    <file>Pik_As.gif</file>
+    <file>Pik_Bube.gif</file>
+    <file>Pik_Dame.gif</file>
+    <file>Pik_Koenig.gif</file>
+    <file>Pik_Zehn.gif</file>
+  </qresource>
+</RCC>

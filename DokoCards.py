@@ -100,7 +100,7 @@ class DokoCard(Card):
 
 
 class DokoDeck(UserList[DokoCard]):
-    def __init__(self, iterable : UserList[DokoCard] = None):
+    def __init__(self, iterable: UserList[DokoCard] = None):
         data: UserList[DokoCard] = iterable
 
         if data == None:

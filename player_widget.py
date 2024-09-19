@@ -1,7 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from Player import DokoPlayer
-from game import Game
+from game import *
 
 
 class Players(QtWidgets.QWidget):
@@ -41,15 +41,16 @@ class PlayerWidget(QtWidgets.QWidget):
         self.header_layout = QtWidgets.QHBoxLayout()
 
         self._name_label = QtWidgets.QLabel((str(self._doko_player) + ' : ').upper())
-        self._name_label.setStyleSheet("QLabel {font-weight: bold}")
+        self._name_label.setStyleSheet("font-weight: bold; color : navy; ")
 
         self._partner_label = QtWidgets.QLabel("")
+        self._partner_label.setStyleSheet("font-weight: bold; color : navy; ")
 
         self._abgabe_label = QtWidgets.QLabel("")
-        self._abgabe_label.setStyleSheet("QLabel {font-weight: bold; color : magenta; }")
+        self._abgabe_label.setStyleSheet("font-weight: bold; color : maroon; ")
 
         self._schmeissen_label = QtWidgets.QLabel("")
-        self._schmeissen_label.setStyleSheet("QLabel {font-weight: bold; color : yellow; }")
+        self._schmeissen_label.setStyleSheet("font-weight: bold; color : darkmagenta; ")
 
         self.header_layout.addWidget(self._name_label)
         self.header_layout.addWidget(self._partner_label)
@@ -82,8 +83,11 @@ class PlayerWidget(QtWidgets.QWidget):
                 label.setText('HOCHZEIT')
             else:
                 label.setText('RE')
+
+            self._partner_label.setStyleSheet("font-weight: bold; color : green; ")
         else:
             label.setText('KONTRA')
+            self._partner_label.setStyleSheet("font-weight: bold; color : cornflowerblue; ")
 
         label = self._abgabe_label
         if me.has_abgabe:
@@ -109,7 +113,7 @@ class PlayerWidget(QtWidgets.QWidget):
             for i in range(self.cards_layout.count()):
                 item = self.cards_layout.itemAt(i)
                 if type(item.widget()) == QtWidgets.QLabel:
-                    widget = item.widget()
+                    # noinspection PyUnresolvedReferences
                     item.widget().setPixmap(QtGui.QPixmap(self._doko_player.Deck[i].image))
         except Exception as ex:
             print(f'Player {self._doko_player.player_id}:', ex)
@@ -122,70 +126,48 @@ class MainWindow(QtWidgets.QWidget):
         self.setWindowTitle('Doppelkopf Test')
         # set the grid layout
         self.players = Players()
-        #self.setStyleSheet("background-color: gainsboro; color: lightgray")
+        self.setStyleSheet("background-color: gainsboro; color: lightgray")
+
         layout = QtWidgets.QGridLayout()
         layout.addWidget(self.players,0, 0, 8, 8, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
 
         child_layout = QtWidgets.QHBoxLayout()
         button_change: QtWidgets.QPushButton = QtWidgets.QPushButton('New Game')
+        button_change.setStyleSheet("background-color: moccasin; color: black; font-weight: bold;")
         # noinspection PyUnresolvedReferences
         button_change.clicked.connect(self.players.on_new_game)
         child_layout.addWidget(button_change,
                                alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
 
         self.button_close = QtWidgets.QPushButton('Close')
+        self.button_close.setStyleSheet("background-color: moccasin; color: black; font-weight: bold;")
+
+        # noinspection PyUnresolvedReferences
         self.button_close.clicked.connect(self.close)
         child_layout.addWidget(self.button_close,alignment=QtCore.Qt.AlignmentFlag.AlignRight)
         layout.addLayout(child_layout, 10, 0, 1, 10)
 
-        layout_options = QtWidgets.QVBoxLayout()
-        self.options_group = QtWidgets.QGroupBox('GAME TYPE :')
-
-        self.option_solo1 = QtWidgets.QRadioButton('Normal')
-        self.option_solo1.setStyleSheet("color: black;"
-                                        "font-weight: bold;")
-        self.option_solo1.toggled.connect(self.on_options_clicked)
-
-        self.option_solo2 = QtWidgets.QRadioButton('Hochzeit')
-        self.option_solo2.setStyleSheet("color: black;"
-                                        "font-weight: bold;")
-        self.option_solo2.toggled.connect(self.on_options_clicked)
-                        
-                        
-        self.option_solo3 = QtWidgets.QRadioButton('Buben Solo')
-        self.option_solo3.setStyleSheet("color: black;"
-                                        "font-weight: bold;")
-        self.option_solo3.toggled.connect(self.on_options_clicked)
-        
-        self.option_solo4 = QtWidgets.QRadioButton('Damen Solo')
-        self.option_solo4.setStyleSheet("color: black;"
-                                        "font-weight: bold;")
-        self.option_solo4.toggled.connect(self.on_options_clicked)
-
-        self.option_solo1.setChecked(True)
-
-        layout_options.addWidget(self.option_solo1)
-        
-        layout_options.addWidget(self.option_solo2)
-        layout_options.addWidget(self.option_solo3)
-        layout_options.addWidget(self.option_solo4)
-
-        self.options_group.setLayout(layout_options)
-        self.options_group.setStyleSheet("background-color: lightyellow;"
-                                         "font-weight: bold;"
-                                         "border: 1px solid gray;"
-                                         "margin-top: 1px")
-                        
+        self.options_group = OptionBox(self.on_options_clicked)
+        self.options_group.setStyleSheet("background-color: rebeccapurple;"
+                                         "color: red;")
+        #                                 "font-weight: bold;"
+        #                                 "border: 1px solid gray;"
+        #                                "margin-top: 1px")
+        self.options_group.setVisible(True)
         layout.addWidget(self.options_group, 1 ,10,)
 
         self.setLayout(layout)
 
     def on_options_clicked(self):
-        rb:QRadioButton = self.sender()
-        if rb.isChecked():
-            print(f"option {rb.text()} clicked")
+        rb:QtWidgets.QRadioButton
+
+        if type(self.sender()) is QtWidgets.QRadioButton:
+            rb = self.sender()
+            if rb.isChecked():
+                print(f"Game Type {GameType[rb.text().upper()]} clicked")
 
 if __name__ == '__main__':
+    from game_option_widget import OptionBox
     app = QtWidgets.QApplication([])
     window = MainWindow()
     window.show()
