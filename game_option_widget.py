@@ -17,15 +17,16 @@ class OptionBox(QtWidgets.QGroupBox):
     
     @pyqtSlot(GameType)
     def type_changed_received(self, gametype):
-        print(f'game type changed received :{gametype}')
+        print(f'game type changed received : {gametype}')
     
     def on_game_type_changed(self,gametype):
         if type(self.sender()) is QtWidgets.QRadioButton:
             rb = self.sender()
             if rb.isChecked():
                 self.game_type_changed.emit(GameType[rb.text().upper()])
+                
     
-    game_type_changed = QtCore.pyqtSignal(GameType, name='game_type_changed')    
+    game_type_changed = QtCore.pyqtSignal((GameType,), name='game_type_changed')    
     
     
     option_buttons: list[QtWidgets.QRadioButton] = []
@@ -38,11 +39,10 @@ class OptionBox(QtWidgets.QGroupBox):
         self.option_buttons.clear()
         self.setTitle(titel) 
         self.setMinimumSize(130, 220)
-        self.setStyleSheet(
-                                         "color: navy;"
-                                         "font-weight: bold;"
-                                         "border: 2px solid gray;"
-                                          "margin-top: 8px")
+        self.setStyleSheet("color: navy;"
+                            "font-weight: bold;"
+                            "border: 2px solid gray;"
+                            "margin-top: 8px")
         for index, key in enumerate(options):
             button = QtWidgets.QRadioButton(key)
             button.setStyleSheet("background-color: moccasin; color: black; font-weight: bold;")

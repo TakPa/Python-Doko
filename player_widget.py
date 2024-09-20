@@ -8,12 +8,12 @@ class Players(QtWidgets.QWidget):
     players = list[DokoPlayer]
     player_widgets = []
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, game, *args, **kwargs):
         super(Players, self).__init__(*args, **kwargs)
         self.setWindowTitle("Player Widgets")
-        self.game: Game = Game()
-        self.game.new_game()
-        self.players = self.game.playerlist
+        self.game: Game = game
+        # self.game.new_game()
+        self.players = self.game.player_list
 
         layout = QtWidgets.QVBoxLayout()
         for i in range(len(self.players)):
@@ -25,6 +25,11 @@ class Players(QtWidgets.QWidget):
 
     def on_new_game(self):
         self.game.new_game()
+        self.update_widgets()
+        # for player in self.player_widgets:
+            #player.update_widgets()
+
+    def update_widgets(self):
         for player in self.player_widgets:
             player.update_widgets()
 
