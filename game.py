@@ -7,17 +7,26 @@ from PlayingCards import CardFamily
 
 
 class Game:
-    _playerlist: list[DokoPlayer]
-    _fulldeck: FullDeck
+    _player_list: List[DokoPlayer] = []
+    _full_deck: FullDeck = FullDeck()
     _game_type: GameType
+
+    @classmethod
+    def _create_player_list(cls) -> List[DokoPlayer]:
+        player_list = []
+        i: int
+
+        for i in range(4):
+            player_list.append(DokoPlayer('Player', i))
+        return player_list
 
     @property
     def player_list(self):
-        return self._playerlist
+        return self._player_list
 
     @property
     def full_deck(self):
-        return self._fulldeck
+        return self._full_deck
 
     @property
     def game_type(self):
@@ -25,47 +34,40 @@ class Game:
 
     @player_list.setter
     def player_list(self, iterable: List[DokoPlayer]):
-        self._playerlist = iterable
+        self._player_list = iterable
 
     @game_type.setter
     def game_type(self, new_type: GameType):
         self._game_type = new_type
     
     def __init__(self):
-        self._fulldeck: FullDeck = FullDeck()
-        self._fulldeck.sort(reverse=True)
+        self._full_deck: FullDeck = FullDeck()
+        self._full_deck.sort(reverse=True)
 
-        self.player_list = self._create_playerlist()
+        self.player_list = self._create_player_list()
         self.game_type = GameType.NORMAL
-
-    def _create_playerlist(self):
-        playerlist = []
-        i: int
-
-        for i in range(4):
-            playerlist.append(DokoPlayer('Player', i))
-        return playerlist
 
     def new_game(self):
 
-        self._fulldeck.shuffle_deck()
+        self._full_deck.shuffle_deck()
         for plyer in self.player_list:
             plyer.init_new_game()
             # player.Deck.clear()
             for i in range(10):
                 index = plyer.player_id * 10 + i
-                plyer.Deck.append(self._fulldeck[index])
-            plyer.change_gametype(GameType.NORMAL)
+                plyer.Deck.append(self._full_deck[index])
+            plyer.change_game_type(GameType.NORMAL)
             plyer.Deck.sort(reverse=True)
 
-    def change_gametype(self, gametype: GameType):
+    def change_game_type(self, game_type: GameType):
         for plyer in self.player_list:
-            plyer.change_gametype(gametype)
-        self.game_type = gametype
+            plyer.change_game_type(game_type)
+        self.game_type = game_type
 
 
 if __name__ == '__main__':
     game = Game()
+
     print(game.game_type)
 
     for player in game.player_list:
@@ -94,7 +96,7 @@ if __name__ == '__main__':
         print(f'Anzahl Fehl: {count_family}')
         print()
 
-    game.change_gametype(GameType.BUBEN_SOLO)
+    game.change_game_type(GameType.BUBEN_SOLO)
     print("""
     *******************************************
     Bubensolo:

@@ -26,8 +26,6 @@ class DokoPlayer:
         self._id = player_id
 
     def __init__(self, name: str, player_id: int) -> None:
-        if not isinstance(player_id, int):
-            raise ValueError("ID muss numerisch sein")
         self.name = name
         self.player_id = player_id
         self.Deck: Playerdeck = Playerdeck()
@@ -38,9 +36,9 @@ class DokoPlayer:
     def init_new_game(self):
         self.Deck.clear()
 
-    def change_gametype(self, gametype: GameType) -> None:
+    def change_game_type(self, game_type: GameType) -> None:
         for karte in self.Deck:
-            karte.switch_gametype(gametype)
+            karte.switch_gametype(game_type)
         self.Deck.sort(reverse=True)
 
     @property
@@ -76,68 +74,18 @@ class DokoPlayer:
 
     @property
     def can_schmeissen(self) -> (bool, str):
-        message: str = "SCHMEISSEN: "
-        length: int = len(message)
-        yes_he_can: bool = False
+        msg_: str = "SCHMEISSEN: "
+        length: int = len(msg_)
 
         if self.has_five_kings:
-            message += "FÜNF KÖNIGE "
+            msg_ += "FÜNF KÖNIGE "
 
         if self.has_ninety_points:
-            message += "NEUNZIG AUGEN "
+            msg_ += "NEUNZIG AUGEN "
 
         if self.can_not_fuchs_stechen:
-            message += "FUCHS NICHT STECHEN "
+            msg_ += "FUCHS NICHT STECHEN "
 
-        yes_he_can = length < len(message)
+        yes_he_can = length < len(msg_)
 
-        return yes_he_can, message
-
-
-if __name__ == '__main__':
-
-    doko_game = []
-    for i in range(4):
-        doko_game.append(DokoPlayer('Player', i))
-
-    for player in doko_game:
-        print(player)
-
-    new_cards = FullDeck()
-    new_cards.shuffle_deck()
-
-    for player in doko_game:
-        player.init_new_game()
-        for i in range(10):
-            index = player.player_id * 10 + i
-            player.Deck.append(new_cards[index])
-
-    print()
-    for player in doko_game:
-        player.Deck.sort(reverse=True)
-        partner = 'KONTRA'
-        if player.is_re_partner:
-            if player.has_hochzeit:
-                partner = 'HOCHZEIT'
-            else:
-                partner = 'RE'
-
-        abgabe = ''
-        if player.has_abgabe:
-            abgabe = ' ABGABE '
-
-        five_kings = ''
-        (can_schmeissen, message) = player.can_schmeissen
-
-        if can_schmeissen:
-            five_kings = message
-
-        # if player.has_five_kings:
-        #     five_kings = 'Fünf Könige'
-
-        msg = ''
-        for card in player.Deck:
-            msg += f'{card} '
-
-        print(f'{player}:  {partner}  {abgabe}  {five_kings}')
-        print(msg)
+        return yes_he_can, msg_

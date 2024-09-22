@@ -15,9 +15,8 @@ class MainWindow(QtWidgets.QMainWindow):
     @pyqtSlot(GameType)
     def game_type_changed(self, game_type):
         print(f'pyqtSlot: signal received: {game_type}')
-        self.game.change_gametype(game_type)
+        self.game.change_game_type(game_type)
         self.players.update_widgets()
-    
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -99,6 +98,7 @@ class MainWindow(QtWidgets.QMainWindow):
         rb: QtWidgets.QRadioButton
 
         if type(self.sender()) is QtWidgets.QRadioButton:
+            # noinspection PyTypeChecker
             rb: QtWidgets.QRadioButton = self.sender()
             if rb.isChecked():
                 print(f"Game Type {GameType[rb.text().upper()]} clicked")
@@ -106,6 +106,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def on_new_game_clicked(self):
         self.game.new_game()
         self.players.update_widgets()
+        self.option_box.new_game()
 
 
 if __name__ == '__main__':
