@@ -30,8 +30,6 @@ class GameType(Enum):
 class DokoCard(Card):
     __slots__ = ('_priority', '_is_trumpf')
 
-    
-    
     @property
     def priority(self):
         return self._priority
@@ -53,33 +51,43 @@ class DokoCard(Card):
         self._priority: int = 0
         self._is_trumpf: bool = False
         self.switch_gametype(GameType.NORMAL)
+    
+    def switch_gametype_normal(self):
+        if self.family == CardFamily.HERZ and self.face == CardFace.ZEHN:
+            return GamePriority.DULLE.value
+        if self.face == CardFace.DAME:
+            return GamePriority.DAME.value
+        if self.face == CardFace.BUBE:
+            return GamePriority.BUBE.value
+        if self.family == CardFamily.KARO:
+            return GamePriority.TRUMPF.value
+        return 0
+            
+    def switch_gametype_buben_solo(self):
+        if self.face == CardFace.BUBE:
+            return GamePriority.BUBE.value
+        return 0
+
+    def switch_gametype_damen_solo(self):
+        if self.face == CardFace.DAME:
+            return GamePriority.DAME.value
+        return 0
 
     def switch_gametype(self, gametype=GameType.NORMAL):
-        """
+        priority = self.db_id
 
-        :type gametype: GameType
-        """
-        priority = self.DB_ID
+        if gametype is GameType.NONE:
+            self.priority = priority
+            self.is_trumpf = False
+            return
 
-        if gametype != GameType.NONE:
-            match gametype:
-                case GameType.BUBEN_SOLO:
-                    if self.face == CardFace.BUBE:
-                        priority += GamePriority.BUBE.value
-                        
-                case GameType.DAMEN_SOLO:
-                    if self.face == CardFace.DAME:
-                        priority += GamePriority.DAME.value
-            
-                case _:
-                    if self.family == CardFamily.HERZ and self.face == CardFace.ZEHN:
-                        priority += GamePriority.DULLE.value
-                    elif self.face == CardFace.DAME:
-                        priority += GamePriority.DAME.value
-                    elif self.face == CardFace.BUBE:
-                        priority += GamePriority.BUBE.value
-                    elif self.family == CardFamily.KARO:
-                        priority += GamePriority.TRUMPF.value
+        match gametype:
+            case GameType.BUBEN_SOLO:
+                priority += self.switch_gametype_buben_solo()
+            case GameType.DAMEN_SOLO:
+                priority += self.switch_gametype_damen_solo()
+            case _:
+                priority += self.switch_gametype_normal()
                         
         self.priority = priority
         self.is_trumpf = self.priority > GamePriority.TRUMPF.value
@@ -103,7 +111,7 @@ class DokoDeck(UserList[DokoCard]):
     def __init__(self, iterable: UserList[DokoCard] = None):
         data: UserList[DokoCard] = iterable
 
-        if data == None:
+        if data is None:
             data = UserList[DokoCard]
 
         super().__init__(item for item in data)
@@ -130,55 +138,32 @@ class DokoDeck(UserList[DokoCard]):
                 self.data.append(DokoCard(family, face))
 
     def shuffle(self):
-        newdeck = random.sample(self.data, k=40)
-        return DokoDeck(newdeck)
+        new_deck = random.sample(self.data, k=40)
+        return DokoDeck(new_deck)
 
     def shuffle_deck(self):
         random.shuffle(self.data)
 
 
 class FullDeck(DokoDeck):
-    def __init__(self):
-        data : UserList[DokoCard] = UserList()
+    def __init__(self, sort_order=True):
+        data: UserList[DokoCard] = UserList()
         for family in CardFamily:
             for face in CardFace:
                 data.append(DokoCard(family, face))
                 data.append(DokoCard(family, face))
         super().__init__(data)
-        #self.data.sort(reverse=True)
+        self.data.sort(reverse=sort_order)
 
     def shuffle_deck(self):
         random.shuffle(self.data)
 
 
-class Playerdeck(DokoDeck):
+class PlayerDeck(DokoDeck):
 
     def __init__(self):
         super().__init__()
 
-    def switch_gametype(self, gametype : GameType):
-        for dokocard  in self.data:
+    def switch_gametype(self, gametype: GameType):
+        for dokocard in self.data:
             dokocard.switch_gametype(gametype)
-
-
-
-if __name__ == '__main__':
-
-    fulldeck = FullDeck()
-    fulldeck.shuffle_deck()
-
-    playerdecks = []
-    for i in range(4):
-        playerdecks.append([])
-
-    for i in range(4):
-        playerdecks[i].clear()
-        for y in range(10):
-            playerdecks[i].append(fulldeck[(i * 10) + y])
-
-    for i in range(4):
-        playerdecks[i].sort(reverse=True)
-        playerdeck = ''
-        for card in playerdecks[i]:
-            playerdeck += f'{card}; '
-        print(playerdeck)

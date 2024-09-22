@@ -14,7 +14,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     @pyqtSlot(GameType)
     def game_type_changed(self, game_type):
-        print(f'pyqtSlot: signal received: {game_type}')
         self.game.change_game_type(game_type)
         self.players.update_widgets()
 
@@ -28,9 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.title = 'Doppelkopf Test'
         self.filters = 'Text Files (*.txt)'
 
-        # container = QWidget(self)
         self.setWindowTitle('Doppelkopf Test')
-        # set the grid layout
         self.players = Players(self.game)
         self.central_widget = QtWidgets.QWidget(self)
         
@@ -55,54 +52,20 @@ class MainWindow(QtWidgets.QMainWindow):
         child_layout.addWidget(self.button_close, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
         layout.addLayout(child_layout, 10, 0, 1, 11)
 
-        options_layout = QtWidgets.QVBoxLayout()
-
-        for key in GameType:
-            if key is not GameType.NONE:
-                option_string = key.name.capitalize()
-                button = QtWidgets.QRadioButton(option_string)
-                button.setStyleSheet("background-color: plum; color: black;")
-                # noinspection PyUnresolvedReferences
-                button.toggled.connect(self.on_options_clicked)
-                if key is GameType.NORMAL:
-                    button.setChecked(True)
-                options_layout.addWidget(button)
-                
-        self.options_group = QtWidgets.QGroupBox('Game Type :')
-        self.options_group.setLayout(options_layout)
-        self.options_group.setStyleSheet("background-color: navy;"
-                                         "color: white;"
-                                         "font-weight: bold;"
-                                         "border: 3px solid gray;"
-                                         "margin-top: 8px")
-
-        # noinspection PyUnresolvedReferences
-        self.options_group.toggled.connect(self.on_options_clicked)
-        layout.addWidget(self.options_group, 1, 10,)
-        
         self.option_box = OptionBox('GameType :')
-        self.option_box.setStyleSheet("background-color: navy;"
-                                      "color: white;"
+        self.option_box.setStyleSheet("background-color: gainsboro;"
+                                      "color: navy;"
                                       "font-weight: bold;"
-                                      "border: 3px solid gray;"
+                                      "border: 1px solid gray;"
                                       "margin-top: 8px")
 
         self.option_box.game_type_changed.connect(self.game_type_changed)
 
-        layout.addWidget(self.option_box, 3, 10,)
+        layout.addWidget(self.option_box, 2, 10)
 
         self.central_widget.setLayout(layout)
         self.setCentralWidget(self.central_widget)
                  
-    def on_options_clicked(self):
-        rb: QtWidgets.QRadioButton
-
-        if type(self.sender()) is QtWidgets.QRadioButton:
-            # noinspection PyTypeChecker
-            rb: QtWidgets.QRadioButton = self.sender()
-            if rb.isChecked():
-                print(f"Game Type {GameType[rb.text().upper()]} clicked")
-    
     def on_new_game_clicked(self):
         self.game.new_game()
         self.players.update_widgets()

@@ -3,7 +3,7 @@ from DokoCards import *
 
 
 class DokoPlayer:
-    Deck: Playerdeck = Playerdeck()
+    Deck: PlayerDeck = PlayerDeck()
 
     @property
     def name(self):
@@ -28,7 +28,7 @@ class DokoPlayer:
     def __init__(self, name: str, player_id: int) -> None:
         self.name = name
         self.player_id = player_id
-        self.Deck: Playerdeck = Playerdeck()
+        self.Deck: PlayerDeck = PlayerDeck()
 
     def __str__(self) -> str:
         return f'{self.name}_{self.player_id}'
@@ -52,13 +52,7 @@ class DokoPlayer:
 
     @property
     def has_abgabe(self) -> bool:
-        matches: int = 0
-        for crd in self.Deck:
-            if crd.is_trumpf:
-                matches += 1
-                if matches > 3:
-                    return False
-        return True
+        return len([crd for crd in self.Deck if crd.is_trumpf]) < 4
 
     @property
     def has_five_kings(self) -> bool:
@@ -69,11 +63,14 @@ class DokoPlayer:
         return sum(crd.face.value for crd in self.Deck) > 89
 
     @property
-    def can_not_fuchs_stechen(self) -> bool:
-        return len([crd for crd in self.Deck if crd.priority > (GamePriority.TRUMPF.value + CardFace.AS.value)]) == 0
+    def can_fuchs_stechen(self) -> bool:
+        fuchs = DokoCard(CardFamily.KARO, CardFace.AS)
+        
+        fuchs_priority = fuchs.db_id + GamePriority.TRUMPF.value 
+        return len([crd for crd in self.Deck if crd.priority > fuchs_priority]) > 0
 
     @property
-    def can_schmeissen(self) -> (bool, str):
+    def can_schmeissen(self) -> tuple[bool, str]:
         msg_: str = "SCHMEISSEN: "
         length: int = len(msg_)
 
@@ -83,7 +80,7 @@ class DokoPlayer:
         if self.has_ninety_points:
             msg_ += "NEUNZIG AUGEN "
 
-        if self.can_not_fuchs_stechen:
+        if not self.can_fuchs_stechen:
             msg_ += "FUCHS NICHT STECHEN "
 
         yes_he_can = length < len(msg_)

@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets
-from PyQt6.QtCore import pyqtSignal, pyqtSlot
+from PyQt6.QtCore import pyqtSignal
 
 from DokoCards import GameType
 
@@ -45,7 +45,7 @@ class OptionBox(QtWidgets.QGroupBox):
 
         options_layout = QtWidgets.QVBoxLayout()
         for button in self.option_buttons:
-            button.toggled.connect(self.on_options_toggled)
+            # button.toggled.connect(self.on_options_toggled)
             button.toggled.connect(self.on_game_type_changed)
             options_layout.addWidget(button)
 

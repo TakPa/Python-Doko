@@ -9,7 +9,8 @@ class CardFamily(Enum):
     PIK = 3
     HERZ = 2
     KARO = 1
-    
+
+
 @unique
 class CardFace(Enum):
     AS = 11
@@ -18,8 +19,9 @@ class CardFace(Enum):
     DAME = 3
     BUBE = 2
     
+
 class Card:
-    __slots__ = ('_family', '_face', '_image')
+    __slots__ = ('_family', '_face', '_image', '_db_id')
     ImagePath: str = 'E:/User/Projects/Python Doko/Images/'
 
     @classmethod
@@ -38,9 +40,11 @@ class Card:
         return self._face
     
     @property
-    def DB_ID(self) -> int:
-        return self._family.value * 100 + self._face.value 
-
+    def db_id(self) -> int:
+        if self._db_id is None:
+            self._db_id = self.family.value * 100 + self.face.value
+        return self._db_id
+    
     @property
     def image(self):
         return f'{Card.ImagePath}{self.family.name.capitalize()}_{self.face.name.capitalize()}.gif'
@@ -57,11 +61,11 @@ class Card:
             raise TypeError('face muss eine gültige CardFace sein')
         self._face = value
 
-    
     def __init__(self, family: CardFamily, face: CardFace):
 
         self.family = family
         self.face = face
+        self._db_id = None
         
     def __str__(self) -> str:
         return f'{self.family.name.capitalize()}-{self.face.name.capitalize()}'
@@ -70,22 +74,21 @@ class Card:
     def __eq__(self, value: object) -> bool:
         if not isinstance(value, type(self)) and not isinstance(value, type(0)):
             return False
-        if type(value) == type(0):
-            return self.DB_ID == value
+        if type(value) is type(0):
+            return self.db_id == value
         
-        return value.DB_ID == self.DB_ID
+        return value.db_id == self.db_id
     
     def __gt__(self, other: object):
-        if not isinstance(other, type(self)) :
+        if not isinstance(other, type(self)):
             return True
-        return self.DB_ID > other.DB_ID
+        return self.db_id > other.db_id
 
     def __ge__(self, other: object):
         return self > other or self == other
     
+    def __lt__(self, other: object):
+        return not self > other and not self == other
     
-    def __lt__ (self, other: object):
-        return  not self > other and not self == other 
-    
-    def __le__ (self, other: object):
-        return  not self > other 
+    def __le__(self, other: object):
+        return not self > other

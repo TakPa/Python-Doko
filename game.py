@@ -7,18 +7,13 @@ from PlayingCards import CardFamily
 
 
 class Game:
-    _player_list: List[DokoPlayer] = []
+   
+    _player_list: List[DokoPlayer] = [DokoPlayer('Player', 0),
+                                      DokoPlayer('Player', 1),
+                                      DokoPlayer('Player', 2),
+                                      DokoPlayer('Player', 3),
+                                      ]
     _full_deck: FullDeck = FullDeck()
-    _game_type: GameType
-
-    @classmethod
-    def _create_player_list(cls) -> List[DokoPlayer]:
-        player_list = []
-        i: int
-
-        for i in range(4):
-            player_list.append(DokoPlayer('Player', i))
-        return player_list
 
     @property
     def player_list(self):
@@ -41,23 +36,19 @@ class Game:
         self._game_type = new_type
     
     def __init__(self):
-        self._full_deck: FullDeck = FullDeck()
-        self._full_deck.sort(reverse=True)
-
-        self.player_list = self._create_player_list()
         self.game_type = GameType.NORMAL
 
     def new_game(self):
 
         self._full_deck.shuffle_deck()
-        for plyer in self.player_list:
-            plyer.init_new_game()
+        for _player in self.player_list:
+            _player.init_new_game()
             # player.Deck.clear()
             for i in range(10):
-                index = plyer.player_id * 10 + i
-                plyer.Deck.append(self._full_deck[index])
-            plyer.change_game_type(GameType.NORMAL)
-            plyer.Deck.sort(reverse=True)
+                index = _player.player_id * 10 + i
+                _player.Deck.append(self._full_deck[index])
+            _player.change_game_type(GameType.NORMAL)
+            _player.Deck.sort(reverse=True)
 
     def change_game_type(self, game_type: GameType):
         for plyer in self.player_list:
