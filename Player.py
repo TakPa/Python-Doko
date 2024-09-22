@@ -3,7 +3,7 @@ from DokoCards import *
 
 
 class DokoPlayer:
-    Deck: Playerdeck = Playerdeck()
+    Deck: PlayerDeck = PlayerDeck()
 
     @property
     def name(self):
@@ -28,7 +28,7 @@ class DokoPlayer:
     def __init__(self, name: str, player_id: int) -> None:
         self.name = name
         self.player_id = player_id
-        self.Deck: Playerdeck = Playerdeck()
+        self.Deck: PlayerDeck = PlayerDeck()
 
     def __str__(self) -> str:
         return f'{self.name}_{self.player_id}'
@@ -52,13 +52,7 @@ class DokoPlayer:
 
     @property
     def has_abgabe(self) -> bool:
-        matches: int = 0
-        for crd in self.Deck:
-            if crd.is_trumpf:
-                matches += 1
-                if matches > 3:
-                    return False
-        return True
+        return len([crd for crd in self.Deck if crd.is_trumpf]) < 4
 
     @property
     def has_five_kings(self) -> bool:
@@ -73,7 +67,7 @@ class DokoPlayer:
         return len([crd for crd in self.Deck if crd.priority > (GamePriority.TRUMPF.value + CardFace.AS.value)]) == 0
 
     @property
-    def can_schmeissen(self) -> (bool, str):
+    def can_schmeissen(self) -> tuple[bool, str]:
         msg_: str = "SCHMEISSEN: "
         length: int = len(msg_)
 

@@ -9,7 +9,8 @@ class CardFamily(Enum):
     PIK = 3
     HERZ = 2
     KARO = 1
-    
+
+
 @unique
 class CardFace(Enum):
     AS = 11
@@ -18,6 +19,7 @@ class CardFace(Enum):
     DAME = 3
     BUBE = 2
     
+
 class Card:
     __slots__ = ('_family', '_face', '_image')
     ImagePath: str = 'E:/User/Projects/Python Doko/Images/'
@@ -38,7 +40,7 @@ class Card:
         return self._face
     
     @property
-    def DB_ID(self) -> int:
+    def db_id(self) -> int:
         return self._family.value * 100 + self._face.value 
 
     @property
@@ -57,7 +59,6 @@ class Card:
             raise TypeError('face muss eine gültige CardFace sein')
         self._face = value
 
-    
     def __init__(self, family: CardFamily, face: CardFace):
 
         self.family = family
@@ -70,22 +71,21 @@ class Card:
     def __eq__(self, value: object) -> bool:
         if not isinstance(value, type(self)) and not isinstance(value, type(0)):
             return False
-        if type(value) == type(0):
-            return self.DB_ID == value
+        if type(value) is type(0):
+            return self.db_id == value
         
-        return value.DB_ID == self.DB_ID
+        return value.db_id == self.db_id
     
     def __gt__(self, other: object):
-        if not isinstance(other, type(self)) :
+        if not isinstance(other, type(self)):
             return True
-        return self.DB_ID > other.DB_ID
+        return self.db_id > other.db_id
 
     def __ge__(self, other: object):
         return self > other or self == other
     
+    def __lt__(self, other: object):
+        return not self > other and not self == other
     
-    def __lt__ (self, other: object):
-        return  not self > other and not self == other 
-    
-    def __le__ (self, other: object):
-        return  not self > other 
+    def __le__(self, other: object):
+        return not self > other
