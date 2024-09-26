@@ -60,7 +60,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.option_box.game_type_changed.connect(self.game_type_changed)
 
+<<<<<<< HEAD
         layout.addWidget(self.option_box, 2, 10)
+=======
+        layout.addWidget(self.option_box, 1, 10)
+>>>>>>> e9c86b4342881635b02ee4f292c4b1a04ffbe211
 
         self.central_widget.setLayout(layout)
         self.setCentralWidget(self.central_widget)

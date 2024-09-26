@@ -16,7 +16,11 @@ class Player:
             raise ValueError('Id muss eine Ganzzahl sein')
     
 class DokoPlayer:
+<<<<<<< HEAD
     Deck: PlayerDeck = PlayerDeck() 
+=======
+    Deck: PlayerDeck = PlayerDeck()
+>>>>>>> e9c86b4342881635b02ee4f292c4b1a04ffbe211
 
     @property
     def name(self):
@@ -27,9 +31,14 @@ class DokoPlayer:
         return self._player._id
 
     def __init__(self, name: str, player_id: int) -> None:
+<<<<<<< HEAD
         self._player = Player(name,player_id)
         # self.name = name
         # self.player_id = player_id
+=======
+        self.name = name
+        self.player_id = player_id
+>>>>>>> e9c86b4342881635b02ee4f292c4b1a04ffbe211
         self.Deck: PlayerDeck = PlayerDeck()
 
     def __str__(self) -> str:
