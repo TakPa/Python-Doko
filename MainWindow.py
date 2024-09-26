@@ -1,7 +1,6 @@
 from PyQt6.QtCore import pyqtSlot
 from PyQt6 import QtWidgets, QtCore
 
-
 from player_widget import Players
 from game_option_widget import OptionBox
 

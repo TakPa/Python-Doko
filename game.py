@@ -3,7 +3,7 @@ from typing import List, Any
 
 from DokoCards import FullDeck, GameType
 from Player import DokoPlayer
-from PlayingCards import CardFamily
+from PlayCard import CardFamily
 
 
 class Game:

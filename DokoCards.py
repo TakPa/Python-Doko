@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from PlayingCards import *
-from enum import Enum, unique
+from PlayCard import *
 import random
 from collections import UserList
 
@@ -27,9 +26,29 @@ class GameType(Enum):
         return self == GameType.NORMAL or self == GameType.HOCHZEIT or self == GameType.ABGABE
         
 
-class DokoCard(Card):
-    __slots__ = ('_priority', '_is_trumpf')
+class DokoCard():
+    __slots__ = ('_priority', '_is_trumpf', '_karte')
 
+    @property
+    def family(self):
+        return self._karte.family
+    
+    @property
+    def face(self):
+        return self._karte.face
+    
+    @property
+    def db_id(self):
+        return self._karte.db_id
+    
+    @property
+    def image(self):
+        return self._karte.image
+    
+    @property
+    def is_Re_Dame(self):
+        return self.family is CardFamily.KREUZ and self.face is CardFace.DAME
+            
     @property
     def priority(self):
         return self._priority
@@ -47,7 +66,8 @@ class DokoCard(Card):
         self._is_trumpf = value
 
     def __init__(self, _family: CardFamily, _face: CardFace) -> None:
-        super().__init__(_family, _face)
+        # super().__init__(_family, _face)
+        self._karte = PLayCard(_family, _face, _family.value * 10 + _face.value)
         self._priority: int = 0
         self._is_trumpf: bool = False
         self.switch_gametype(GameType.NORMAL)
@@ -92,6 +112,11 @@ class DokoCard(Card):
         self.priority = priority
         self.is_trumpf = self.priority > GamePriority.TRUMPF.value
 
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, type(self)):
+            return False
+        return self.db_id == value.db_id
+        
     def __gt__(self, other: object):
         if not isinstance(other, type(self)):
             return True
@@ -167,3 +192,13 @@ class PlayerDeck(DokoDeck):
     def switch_gametype(self, gametype: GameType):
         for dokocard in self.data:
             dokocard.switch_gametype(gametype)
+    
+    @property 
+    def is_re_deck(self):
+        return len([crd for crd in self 
+                     if crd.is_Re_Dame])
+    @property 
+    def has_abgabe(self):
+        return len([crd for crd in self if crd.is_trumpf]) < 4
+
+

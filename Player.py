@@ -1,33 +1,35 @@
 # -*- coding: utf-8 -*-
 from DokoCards import *
+from dataclasses import field
 
-
+@dataclass(frozen=True)
+class Player:
+    _name: str
+    _id: int
+    
+    def __post_init__(self):
+        if not isinstance(self._name, str):
+            raise ValueError('Name muss als String übergeben werden')
+        if len(self._name) == 0:
+            raise ValueError("Name darf nicht leer sein")
+        if not isinstance(self._id, int):
+            raise ValueError('Id muss eine Ganzzahl sein')
+    
 class DokoPlayer:
-    Deck: PlayerDeck = PlayerDeck()
+    Deck: PlayerDeck = PlayerDeck() 
 
     @property
     def name(self):
-        return self._name
+        return self._player._name
 
     @property
     def player_id(self):
-        return self._id
-
-    @name.setter
-    def name(self, name: str):
-        if not isinstance(name, str):
-            raise ValueError('Name muss als String übergeben werden')
-        if len(name) == 0:
-            raise ValueError("Name darf nicht leer sein")
-        self._name = name
-
-    @player_id.setter
-    def player_id(self, player_id: int):
-        self._id = player_id
+        return self._player._id
 
     def __init__(self, name: str, player_id: int) -> None:
-        self.name = name
-        self.player_id = player_id
+        self._player = Player(name,player_id)
+        # self.name = name
+        # self.player_id = player_id
         self.Deck: PlayerDeck = PlayerDeck()
 
     def __str__(self) -> str:
@@ -43,12 +45,11 @@ class DokoPlayer:
 
     @property
     def is_re_partner(self) -> bool:
-        re_dame = DokoCard(CardFamily.KREUZ, CardFace.DAME)
-        return re_dame in self.Deck
+        return self.Deck.is_re_deck > 0
 
     @property
     def has_hochzeit(self) -> bool:
-        return len([crd for crd in self.Deck if crd.family == CardFamily.KREUZ and crd.face == CardFace.DAME]) > 1
+        return self.Deck.is_re_deck > 1
 
     @property
     def has_abgabe(self) -> bool:
