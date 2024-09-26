@@ -29,6 +29,7 @@ class GameType(Enum):
 class DokoCard():
     __slots__ = ('_priority', '_is_trumpf', '_karte')
 
+<<<<<<< HEAD
     @property
     def family(self):
         return self._karte.family
@@ -37,6 +38,8 @@ class DokoCard():
     def face(self):
         return self._karte.face
     
+=======
+>>>>>>> e9c86b4342881635b02ee4f292c4b1a04ffbe211
     @property
     def db_id(self):
         return self._karte.db_id
@@ -93,6 +96,11 @@ class DokoCard():
             return GamePriority.DAME.value
         return 0
 
+<<<<<<< HEAD
+=======
+        
+        
+>>>>>>> e9c86b4342881635b02ee4f292c4b1a04ffbe211
     def switch_gametype(self, gametype=GameType.NORMAL):
         priority = self.db_id
 
@@ -202,3 +210,26 @@ class PlayerDeck(DokoDeck):
         return len([crd for crd in self if crd.is_trumpf]) < 4
 
 
+<<<<<<< HEAD
+=======
+if __name__ == '__main__':
+
+    fulldeck = FullDeck()
+    fulldeck.shuffle_deck()
+
+    player_decks = []
+    for i in range(4):
+        player_decks.append([])
+
+    for i in range(4):
+        player_decks[i].clear()
+        for y in range(10):
+            player_decks[i].append(fulldeck[(i * 10) + y])
+
+    for i in range(4):
+        player_decks[i].sort(reverse=True)
+        player_deck = ''
+        for card in player_decks[i]:
+            player_deck += f'{card}; '
+        print(player_deck)
+>>>>>>> e9c86b4342881635b02ee4f292c4b1a04ffbe211
