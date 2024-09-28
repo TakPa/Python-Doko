@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum, unique
 
+
 @unique
 class CardFamily(Enum):
     KREUZ = 4
@@ -20,18 +21,30 @@ class CardFace(Enum):
     
 @dataclass(frozen=True)
 class PLayCard:
-    family: CardFamily
-    face: CardFace
-    db_id: int
+    _family: CardFamily
+    _face: CardFace
+    _db_id: int
     image_path: str = 'E:/User/Projects/Python Doko/Images/'
     
     @property
+    def family(self):
+        return self._family
+
+    @property
+    def face(self):
+        return self._face
+
+    @property
+    def db_id(self):
+        return self._db_id
+
+    @property
     def image(self):
-        return f'{self.image_path}{self.family.name.capitalize()}' + \
+        return f'{self.image_path}{self._family.name.capitalize()}' + \
                 f'_{self.face.name.capitalize()}.gif'
 
     def __post_init__(self):
-        if not isinstance(self.family, CardFamily):
+        if not isinstance(self._family, CardFamily):
             raise ValueError('family muss Kartenfamile sein (KREUZ, PIK, ... ) ')
         if not isinstance(self.face, CardFace):
             raise ValueError('face muss Kartengesicht sein (AS, ZEHN, ... ) ')
@@ -39,15 +52,15 @@ class PLayCard:
             raise ValueError('db_id muss eine Ganzzahl sein')
 
     def __str__(self) -> str:
-        return f'{self.family.name.capitalize()}-{self.face.name.capitalize()}'
+        return f'{self._family.name.capitalize()}-{self.face.name.capitalize()}'
 
-    def __eq__(self, value: object) -> bool:
-        if not isinstance(value, type(self)) and not isinstance(value, type(0)):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, type(self)) and not isinstance(other, int):
             return False
-        if type(value) is type(0):
-            return self.db_id == value
+        if type(other) is int:
+            return self.db_id == other.db_id
         
-        return value.db_id == self.db_id
+        return other.db_id == self.db_id
     
     def __gt__(self, other: object):
         if not isinstance(other, type(self)):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from DokoCards import *
-from dataclasses import field
+
 
 @dataclass(frozen=True)
 class Player:
@@ -14,31 +14,29 @@ class Player:
             raise ValueError("Name darf nicht leer sein")
         if not isinstance(self._id, int):
             raise ValueError('Id muss eine Ganzzahl sein')
+        
+    @property
+    def name(self):
+        return self._name
     
+    @property
+    def id(self):
+        return self._id
+    
+
 class DokoPlayer:
-<<<<<<< HEAD
     Deck: PlayerDeck = PlayerDeck() 
-=======
-    Deck: PlayerDeck = PlayerDeck()
->>>>>>> e9c86b4342881635b02ee4f292c4b1a04ffbe211
 
     @property
     def name(self):
-        return self._player._name
+        return self._player.name
 
     @property
     def player_id(self):
-        return self._player._id
+        return self._player.id
 
     def __init__(self, name: str, player_id: int) -> None:
-<<<<<<< HEAD
-        self._player = Player(name,player_id)
-        # self.name = name
-        # self.player_id = player_id
-=======
-        self.name = name
-        self.player_id = player_id
->>>>>>> e9c86b4342881635b02ee4f292c4b1a04ffbe211
+        self._player = Player(name, player_id)
         self.Deck: PlayerDeck = PlayerDeck()
 
     def __str__(self) -> str:
