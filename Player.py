@@ -38,12 +38,16 @@ class DokoPlayer:
     def __init__(self, name: str, player_id: int) -> None:
         self._player = Player(name, player_id)
         self.Deck: PlayerDeck = PlayerDeck()
+        self.game_type = GameType.NORMAL
+        self.vorbehalt = GameType.NORMAL
 
     def __str__(self) -> str:
         return f'{self.name}_{self.player_id}'
 
     def init_new_game(self):
         self.Deck.clear()
+        self.game_type = GameType.NORMAL
+        self.game_type = GameType.NORMAL
 
     def change_game_type(self, game_type: GameType) -> None:
         for karte in self.Deck:
@@ -94,3 +98,15 @@ class DokoPlayer:
         yes_he_can = length < len(msg_)
 
         return yes_he_can, msg_
+    
+    def get_valid_vorbehalte(self) -> UserList[GameType]:
+        _vorbehalte = []
+        _schmeissen, txt = self.can_schmeissen
+        if _schmeissen:
+             _vorbehalte.append(GameType.SCHMEISSEN)
+        if self.has_hochzeit:
+            _vorbehalte.append(GameType.HOCHZEIT)
+        if self.has_abgabe:
+            _vorbehalte.append(GameType.ABGABE)
+        return _vorbehalte
+            

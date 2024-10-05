@@ -32,13 +32,13 @@ class OptionBox(QtWidgets.QGroupBox):
         self.option_buttons.clear()
         self.setTitle(titel)
         self.setMinimumSize(130, 220)
-        self.setStyleSheet("color: navy;"
-                           "font-weight: bold;"
-                           "border: 2px solid gray;"
-                           "margin-top: 8px")
+        # self.setStyleSheet("color: navy;"
+        #                    "font-weight: bold;"
+        #                    "border: 2px solid gray;"
+        #                    "margin-top: 8px")
         for index, key in enumerate(options):
             button = QtWidgets.QRadioButton(key)
-            button.setStyleSheet("background-color: moccasin; color: black; font-weight: bold;")
+            # button.setStyleSheet("background-color: moccasin; color: black; font-weight: bold;")
             # noinspection PyUnresolvedReferences
             self.option_buttons.append(button)
         self.option_buttons[0].setChecked(True)
@@ -52,7 +52,14 @@ class OptionBox(QtWidgets.QGroupBox):
         self.setLayout(options_layout)
 
     def new_game(self):
+        for button in self.option_buttons:
+            # button.toggled.connect(self.on_options_toggled)
+            button.toggled.disconnect(self.on_game_type_changed)
         self.option_buttons[0].setChecked(True)
+        for button in self.option_buttons:
+            # button.toggled.connect(self.on_options_toggled)
+            button.toggled.connect(self.on_game_type_changed)
+        
 
     def on_options_toggled(self):
         if type(self.sender()) is QtWidgets.QRadioButton:
@@ -65,7 +72,7 @@ class OptionBox(QtWidgets.QGroupBox):
         self.option_buttons.clear()
         for index, key in enumerate(options):
             button = QtWidgets.QRadioButton(key)
-            button.setStyleSheet("background-color: moccasin; color: black; font-weight: bold;")
+            # button.setStyleSheet("background-color: moccasin; color: black; font-weight: bold;")
             # noinspection PyUnresolvedReferences
             self.option_buttons.append(button)
             # self.option_group.addWidget(self.option_buttons[index])

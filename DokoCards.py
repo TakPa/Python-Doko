@@ -20,6 +20,7 @@ class GameType(Enum):
     BUBEN_SOLO = 3
     DAMEN_SOLO = 4
     ABGABE = 5
+    SCHMEISSEN = 6
 
     @property
     def is_normal_game(self) -> bool:
