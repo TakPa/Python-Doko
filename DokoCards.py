@@ -24,7 +24,15 @@ class GameType(Enum):
 
     @property
     def is_normal_game(self) -> bool:
-        return self == GameType.NORMAL or self == GameType.HOCHZEIT or self == GameType.ABGABE
+        return self == GameType.NORMAL or self == GameType.HOCHZEIT 
+        
+    @property
+    def is_solo(self) -> bool:
+        return self is GameType.BUBEN_SOLO or self is GameType.DAMEN_SOLO 
+        
+    @property
+    def is_abbruch(self) -> bool:
+        return self is GameType.ABGABE or self is GameType.SCHMEISSEN 
         
 
 class DokoCard:
@@ -88,7 +96,7 @@ class DokoCard:
         if self.face == CardFace.BUBE:
             return GamePriority.BUBE.value
         return 0
-
+    
     def switch_gametype_damen_solo(self):
         if self.face == CardFace.DAME:
             return GamePriority.DAME.value
@@ -189,16 +197,36 @@ class PlayerDeck(DokoDeck):
 
     def __init__(self):
         super().__init__()
+        self._game_type = GameType.NORMAL
 
     def switch_gametype(self, gametype: GameType):
         for dokocard in self.data:
             dokocard.switch_gametype(gametype)
+        self._game_type = gametype
     
     @property 
-    def is_re_deck(self):
-        return len([crd for crd in self
+    def is_re_deck(self)->int: 
+        return len([crd for crd in self.data
                     if crd.is_re_dame])
 
     @property
     def has_abgabe(self):
-        return len([crd for crd in self if crd.is_trumpf]) < 4
+        return len([crd for crd in self.data if crd.is_trumpf]) < 4
+    
+    @property
+    def has_five_kings(self) -> bool:
+        return len([crd for crd in self.data if crd.face == CardFace.KOENIG]) > 4
+
+    @property
+    def has_ninety_points(self) -> bool:
+        return sum(crd.face.value for crd in self.data) > 89
+
+
+if __name__ == '__main__':
+    for index, game_type in enumerate(GameType):
+        print(GameType(index))
+        
+    type_ = GameType.DAMEN_SOLO
+    
+    print(type(type_), type_.is_solo)
+    

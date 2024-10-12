@@ -25,7 +25,6 @@ class Player:
     
 
 class DokoPlayer:
-    Deck: PlayerDeck = PlayerDeck() 
 
     @property
     def name(self):
@@ -39,7 +38,12 @@ class DokoPlayer:
         self._player = Player(name, player_id)
         self.Deck: PlayerDeck = PlayerDeck()
         self.game_type = GameType.NORMAL
-        self.vorbehalt = GameType.NORMAL
+        
+        self._is_re = False
+        self._can_schmeissen = [False, '']
+        self._has_abgabe = False
+        
+        
 
     def __str__(self) -> str:
         return f'{self.name}_{self.player_id}'
@@ -47,32 +51,51 @@ class DokoPlayer:
     def init_new_game(self):
         self.Deck.clear()
         self.game_type = GameType.NORMAL
-        self.game_type = GameType.NORMAL
-
-    def change_game_type(self, game_type: GameType) -> None:
-        for karte in self.Deck:
-            karte.switch_gametype(game_type)
+        
+        
+    def change_game_type(self, game_type: GameType, new_game: bool = False ) -> None:
+        self.game_type = game_type
+        self.Deck.switch_gametype(game_type)
+        # for karte in self.Deck:
+            # karte.switch_gametype(game_type)
         self.Deck.sort(reverse=True)
+        if new_game:
+            self.set_normal_game_status()
+    
+    def set_normal_game_status(self):
+        self._can_schmeissen = self.can_schmeissen
+        self._has_abgabe = self.Deck.has_abgabe
+        self._is_re = self.Deck.is_re_deck
+                
+
+    # @property
+    # def has_vorbehalt(self) -> bool:
+    #     return self.game_type is not  self.vorbehalt_type
 
     @property
     def is_re_partner(self) -> bool:
+        return self._is_re > 0
         return self.Deck.is_re_deck > 0
 
     @property
     def has_hochzeit(self) -> bool:
+        return self._is_re > 1
         return self.Deck.is_re_deck > 1
 
     @property
     def has_abgabe(self) -> bool:
-        return len([crd for crd in self.Deck if crd.is_trumpf]) < 4
+        return self._has_abgabe
+        return self.Deck.has_abgabe
 
     @property
     def has_five_kings(self) -> bool:
-        return len([crd for crd in self.Deck if crd.face == CardFace.KOENIG]) > 4
+        return self.Deck.has_five_kings
+        # return len([crd for crd in self.Deck if crd.face == CardFace.KOENIG]) > 4
 
     @property
     def has_ninety_points(self) -> bool:
-        return sum(crd.face.value for crd in self.Deck) > 89
+        return self.Deck.has_ninety_points
+        # return sum(crd.face.value for crd in self.Deck) > 89
 
     @property
     def can_fuchs_stechen(self) -> bool:
@@ -101,12 +124,13 @@ class DokoPlayer:
     
     def get_valid_vorbehalte(self) -> UserList[GameType]:
         _vorbehalte = []
-        _schmeissen, txt = self.can_schmeissen
+        _schmeissen, txt =  self.can_schmeissen
         if _schmeissen:
              _vorbehalte.append(GameType.SCHMEISSEN)
         if self.has_hochzeit:
             _vorbehalte.append(GameType.HOCHZEIT)
         if self.has_abgabe:
             _vorbehalte.append(GameType.ABGABE)
-        return _vorbehalte
+        self._vorbehalte = _vorbehalte
+        return self._vorbehalte
             

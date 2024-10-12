@@ -9,18 +9,23 @@ from game import Game, DokoPlayer
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    option_buttons: list[QtWidgets.QRadioButton] = []
+    # option_buttons: list[QtWidgets.QRadioButton] = []
 
-    @pyqtSlot(GameType)
-    def game_type_changed(self, game_type):
-        self.game.change_game_type(game_type)
-        self.players.update_widgets()
+    # @pyqtSlot(GameType)
+    # def game_type_changed(self, game_type):
+    #     self.game.change_game_type(game_type)
+    #     self.players.update_widgets()
 
     @pyqtSlot(DokoPlayer, GameType)
     def player_game_type_changed(self,  player: DokoPlayer, game_type: GameType):
         print(game_type, player)
-        player.vorbehalt = game_type
-        self.game.change_game_type(game_type)
+        player.vorbehalt_type = game_type
+        if self.game.handle_vorbehalt(game_type, player):
+            print('accepted') 
+        else:
+            print('rejected') 
+         
+        # self.game.change_game_type(game_type)
         self.players.update_widgets()
         
     
@@ -80,6 +85,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
+    # from PyQt6.QtWidgets import QStyleFactory
+    # print(QStyleFactory.keys())
+    # print(app.style().objectName())
+    # app.setStyleSheet('windowsvista')
     window = MainWindow()
     window.show()
     app.exec()

@@ -70,36 +70,23 @@ class PlayerWidget(QtWidgets.QWidget):
         "font: bold ; " + \
         "min-width: 5em; " 
 
-        self._vorbehalt_checkbox = QtWidgets.QCheckBox('Vorbehalt')
-        self._vorbehalt_checkbox.checkStateChanged.connect(self.on_vorbehalt_checkbox)
+        self._vorbehalt_check = QtWidgets.QCheckBox('Vorbehalt')
+        self._vorbehalt_check.checkStateChanged.connect(self.on_vorbehalt_checkbox)
         # self._vorbehalt_checkbox.setStyleSheet("font-weight: bold; color : black; "  
         #                                      "background-color : thistle; "
         #                                      "indicator{color  : navy} ")
         
-        self._vorbehalt_dropdown = QtWidgets.QComboBox()
+        self._vorbehalt_options = QtWidgets.QComboBox()
         self.update_dropdown(False)
-        # self._vorbehalt_dropdown.insertItem(1000, GameType.NORMAL.name)
-        # self._vorbehalt_dropdown.insertSeparator(1000)
-
-        # valid_options = self._doko_player.get_valid_vorbehalte()
+        self._vorbehalt_options.setEnabled(False)
+        self._vorbehalt_options.setCurrentIndex(0)
+        self._vorbehalt_options.currentTextChanged.connect(self.on_text_changed)    
         
-        # if len(valid_options) > 0:
-        #     for game_type in valid_options:
-        #         self._vorbehalt_dropdown.insertItem(1000, game_type.name)
-        # index = len(valid_options) + 2
-        # self._vorbehalt_dropdown.insertSeparator(2000)
-        # self._vorbehalt_dropdown.insertItems(2000,[GameType.BUBEN_SOLO.name, GameType.DAMEN_SOLO.name])
-        
-        
-        self._vorbehalt_dropdown.setVisible(False)
-        self._vorbehalt_dropdown.currentIndexChanged.connect(self.on_index_changed)    
-        self._vorbehalt_dropdown.currentTextChanged.connect(self.on_text_changed)    
         self.header_layout.addWidget(self._name_label)
         self.header_layout.addWidget(self._partner_label)
 
-        self.header_layout.addWidget(self._vorbehalt_checkbox)
-        self.header_layout.addWidget(self._vorbehalt_dropdown)
-        
+        self.header_layout.addWidget(self._vorbehalt_check)
+        self.header_layout.addWidget(self._vorbehalt_options)
 
         self.header_layout.addWidget(self._abgabe_label)
         self.header_layout.addWidget(self._schmeissen_label)
@@ -120,40 +107,19 @@ class PlayerWidget(QtWidgets.QWidget):
     def on_text_changed(self, s):
         print(str(f'Activierter Text: {s}'))
         print(GameType[s])
+        if GameType[s] is GameType.NORMAL:
+            self._vorbehalt_check.setChecked(False)
         self.vorbehalt.emit(self._doko_player,GameType[s])
-        
-
-    def on_index_changed(self, index):
-        print(str(f'Activierter Index: {index}'))
-        
-    def on_vorbehalt(self):
-        if type(self.sender()) is QtWidgets.QPushButton:
-            bt = self.sender()
-            if bt.isChecked():
-                dlg = VorbehalteDialog()
-                dlg.setWindowTitle('Vorbehalt')
-                if dlg.exec():
-                    game_type = dlg.game_type
-                    self.vorbehalt.emit(self._doko_player,game_type)
-                else:
-                # noinspection PyUnresolvedReferences
-                    self.vorbehalt.emit(self._doko_player,GameType.NORMAL)
     
     def on_vorbehalt_checkbox(self):
-        bt = self._vorbehalt_checkbox
-        if bt.isChecked():
-            self._vorbehalt_dropdown.setVisible(True)
-            self._vorbehalt_dropdown.showPopup()
-            # dlg = VorbehalteDialog()
-            # dlg.setWindowTitle('Vorbehalt')
-            # if dlg.exec():
-            #     game_type = dlg.game_type
-            #     self.vorbehalt.emit(self._doko_player,game_type)
+        bt = self._vorbehalt_check
+        if self._vorbehalt_check.isChecked():
+            self._vorbehalt_options.setEnabled(True)
+            self._vorbehalt_options.showPopup()
         else:
             # noinspection PyUnresolvedReferences
-            self._vorbehalt_dropdown.setVisible(False)
-            self.vorbehalt.emit(self._doko_player,GameType.NORMAL)
-            bt.setChecked(False)
+            self._vorbehalt_options.setEnabled(False)
+            self._vorbehalt_options.setCurrentText(GameType.NORMAL.name)
             
     def update_widgets(self):
         self.update_header()
@@ -161,9 +127,10 @@ class PlayerWidget(QtWidgets.QWidget):
 
     def update_header(self):
         me: DokoPlayer = self._doko_player
-        self._vorbehalt_checkbox.checkStateChanged.disconnect()
-        
-        self._vorbehalt_checkbox.setChecked(False)
+        # self._vorbehalt_check.checkStateChanged.disconnect()
+        # has_vorbehalt = self._doko_player.has_vorbehalt
+        # self._vorbehalt_check.setChecked(has_vorbehalt)
+
         label: QtWidgets.QLabel = self._partner_label
 
         if me.is_re_partner:
@@ -192,28 +159,31 @@ class PlayerWidget(QtWidgets.QWidget):
             schmeissen_message = message
         label.setText(schmeissen_message)
         self.update_dropdown(True)
-        self._vorbehalt_checkbox.checkStateChanged.connect(self.on_vorbehalt_checkbox)
+        # self.update_dropdown(True)
+        # if has_vorbehalt:
+        #     self._vorbehalt_options.currentTextChanged.disconnect()    
+        #     self._vorbehalt_options.setCurrentText(self._doko_player.vorbehalt_type.name)
+        #     self._vorbehalt_options.currentTextChanged.connect(self.on_text_changed)    
+        # self._vorbehalt_check.checkStateChanged.connect(self.on_vorbehalt_checkbox)
 
     def update_dropdown(self, disconnect):
 
         if disconnect:
-            self._vorbehalt_dropdown.currentIndexChanged.disconnect()    
-            self._vorbehalt_dropdown.currentTextChanged.disconnect()    
+            self._vorbehalt_options.currentTextChanged.disconnect()    
         
-        self._vorbehalt_dropdown.clear()
+        self._vorbehalt_options.clear()
         
-        self._vorbehalt_dropdown.addItem(GameType.NORMAL.name)
-        self._vorbehalt_dropdown.insertSeparator(2)
+        self._vorbehalt_options.addItem(GameType.NORMAL.name)
+        self._vorbehalt_options.insertSeparator(2)
 
         valid_options = self._doko_player.get_valid_vorbehalte()
         
         if len(valid_options) > 0:
             for game_type in valid_options:
-                self._vorbehalt_dropdown.addItem(game_type.name)
-        self._vorbehalt_dropdown.insertSeparator(2000)
-        self._vorbehalt_dropdown.insertItems(2000,[GameType.BUBEN_SOLO.name, GameType.DAMEN_SOLO.name])
-        self._vorbehalt_dropdown.currentIndexChanged.connect(self.on_index_changed)    
-        self._vorbehalt_dropdown.currentTextChanged.connect(self.on_text_changed)    
+                self._vorbehalt_options.addItem(game_type.name)
+        self._vorbehalt_options.insertSeparator(2000)
+        self._vorbehalt_options.addItems([GameType.BUBEN_SOLO.name, GameType.DAMEN_SOLO.name])
+        self._vorbehalt_options.currentTextChanged.connect(self.on_text_changed)    
         
     def update_player_deck(self):
         try:

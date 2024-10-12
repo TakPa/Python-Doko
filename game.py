@@ -11,8 +11,9 @@ class Game:
     _player_list: List[DokoPlayer] = [DokoPlayer('Player', 0),
                                       DokoPlayer('Player', 1),
                                       DokoPlayer('Player', 2),
-                                      DokoPlayer('Player', 3),
+                                      DokoPlayer('Player', 3)
                                       ]
+    _player_vorbehalt: List[GameType] =[]
     _full_deck: FullDeck = FullDeck()
 
     @property
@@ -37,6 +38,8 @@ class Game:
     
     def __init__(self):
         self.game_type = GameType.NORMAL
+        for i in range(len(self.player_list)):
+            self._player_vorbehalt.append(GameType.NORMAL) 
 
     def new_game(self):
 
@@ -47,13 +50,34 @@ class Game:
             for i in range(10):
                 index = _player.player_id * 10 + i
                 _player.Deck.append(self._full_deck[index])
-            _player.change_game_type(GameType.NORMAL)
+            _player.change_game_type(GameType.NORMAL, True)
             _player.Deck.sort(reverse=True)
+        for game_type in self._player_vorbehalt:
+            game_type = GameType.NORMAL
 
     def change_game_type(self, game_type: GameType):
         for plyer in self.player_list:
             plyer.change_game_type(game_type)
         self.game_type = game_type
+
+    def handle_vorbehalt(self, game_type: GameType, player: DokoPlayer):
+        self._player_vorbehalt[player.player_id] = game_type
+        if game_type.value < self.game_type.value:
+            return False
+        
+        current_vorbehalt = max([x.value for x in self._player_vorbehalt])
+        if game_type.value < current_vorbehalt:
+            return False
+        
+        current_vorbehalt_player = [self._player_vorbehalt.index(x) for x in \
+                            [y for y in self._player_vorbehalt \
+                            if y.value == current_vorbehalt] ]
+        
+        if current_vorbehalt_player[0] < player.player_id :
+            return False
+
+        self.change_game_type(game_type)
+        return True        
 
 
 if __name__ == '__main__':
