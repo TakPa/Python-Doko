@@ -150,12 +150,12 @@ class DokoDeck(UserList[DokoCard]):
 
         super().__init__(item for item in data)
 
-    def __setitem__(self, index, item):
-        self.data[index] = item
+    def __setitem__(self, ix, item):
+        self.data[ix] = item
 
-    def insert(self, index, item):
+    def insert(self, ix, item):
 
-        self.data.insert(index, item)
+        self.data.insert(ix, item)
 
     def append(self, item):
         self.data.append(item)
@@ -205,7 +205,7 @@ class PlayerDeck(DokoDeck):
         self._game_type = gametype
     
     @property 
-    def is_re_deck(self)->int: 
+    def is_re_deck(self) -> int:
         return len([crd for crd in self.data
                     if crd.is_re_dame])
 

@@ -31,9 +31,10 @@ class Players(QtWidgets.QWidget):
     def update_widgets(self):
         for player_ in self.player_widgets:
             player_.update_widgets()
+            
 
     def on_vorbehalt(self, player, game_type):
-        print(str(player) + ': ' + str(game_type))
+        # print(str(player) + ': ' + str(game_type))
         self.vorbehalt.emit(player,game_type)
         
 
@@ -120,6 +121,8 @@ class PlayerWidget(QtWidgets.QWidget):
             # noinspection PyUnresolvedReferences
             self._vorbehalt_options.setEnabled(False)
             self._vorbehalt_options.setCurrentText(GameType.NORMAL.name)
+            self.vorbehalt.emit(self._doko_player,GameType.NORMAL)
+            
             
     def update_widgets(self):
         self.update_header()
@@ -167,22 +170,25 @@ class PlayerWidget(QtWidgets.QWidget):
         # self._vorbehalt_check.checkStateChanged.connect(self.on_vorbehalt_checkbox)
 
     def update_dropdown(self, disconnect):
-
         if disconnect:
             self._vorbehalt_options.currentTextChanged.disconnect()    
         
         self._vorbehalt_options.clear()
-        
         self._vorbehalt_options.addItem(GameType.NORMAL.name)
-        self._vorbehalt_options.insertSeparator(2)
-
         valid_options = self._doko_player.get_valid_vorbehalte()
         
         if len(valid_options) > 0:
             for game_type in valid_options:
                 self._vorbehalt_options.addItem(game_type.name)
-        self._vorbehalt_options.insertSeparator(2000)
+
         self._vorbehalt_options.addItems([GameType.BUBEN_SOLO.name, GameType.DAMEN_SOLO.name])
+        self._vorbehalt_options.insertSeparator(1)
+        if len(valid_options) > 0:
+            self._vorbehalt_options.insertSeparator(len(valid_options))
+        
+        game_type_ = self._doko_player.game_type
+        if game_type_.is_solo and self._doko_player.is_re_partner:
+            self._vorbehalt_options.setCurrentText(game_type_.name)            
         self._vorbehalt_options.currentTextChanged.connect(self.on_text_changed)    
         
     def update_player_deck(self):

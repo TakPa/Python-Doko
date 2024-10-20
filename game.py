@@ -50,33 +50,33 @@ class Game:
             for i in range(10):
                 index = _player.player_id * 10 + i
                 _player.Deck.append(self._full_deck[index])
-            _player.change_game_type(GameType.NORMAL, True)
+            _player.change_game_type(GameType.NORMAL)
             _player.Deck.sort(reverse=True)
         for game_type in self._player_vorbehalt:
             game_type = GameType.NORMAL
 
-    def change_game_type(self, game_type: GameType):
+    def change_game_type(self, game_type: GameType, player: DokoPlayer):
         for plyer in self.player_list:
             plyer.change_game_type(game_type)
+            if game_type.is_solo:
+                plyer.set_solo_game_status(player.player_id == plyer.player_id)
+            else:
+                plyer.set_normal_game_status()
+                
         self.game_type = game_type
 
     def handle_vorbehalt(self, game_type: GameType, player: DokoPlayer):
         self._player_vorbehalt[player.player_id] = game_type
-        if game_type.value < self.game_type.value:
-            return False
+        current_vorbehalt_value = max([x.value for x in self._player_vorbehalt])
+        current_vorbehalt = GameType(current_vorbehalt_value)
         
-        current_vorbehalt = max([x.value for x in self._player_vorbehalt])
-        if game_type.value < current_vorbehalt:
-            return False
-        
-        current_vorbehalt_player = [self._player_vorbehalt.index(x) for x in \
+        vorbehalt_player_ids = [self._player_vorbehalt.index(x) for x in \
                             [y for y in self._player_vorbehalt \
-                            if y.value == current_vorbehalt] ]
+                            if y.value == current_vorbehalt_value] ]
         
-        if current_vorbehalt_player[0] < player.player_id :
-            return False
-
-        self.change_game_type(game_type)
+        vorbehalt_player = self.player_list[vorbehalt_player_ids[0]]
+        
+        self.change_game_type(current_vorbehalt, vorbehalt_player)
         return True        
 
 

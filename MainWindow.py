@@ -2,33 +2,27 @@ from PyQt6.QtCore import pyqtSlot
 from PyQt6 import QtWidgets, QtCore
 
 from player_widget import Players
-from game_option_widget import OptionBox
+# from game_option_widget import OptionBox
 
 from DokoCards import GameType
 from game import Game, DokoPlayer
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    # option_buttons: list[QtWidgets.QRadioButton] = []
-
-    # @pyqtSlot(GameType)
-    # def game_type_changed(self, game_type):
-    #     self.game.change_game_type(game_type)
-    #     self.players.update_widgets()
 
     @pyqtSlot(DokoPlayer, GameType)
     def player_game_type_changed(self,  player: DokoPlayer, game_type: GameType):
         print(game_type, player)
         player.vorbehalt_type = game_type
-        if self.game.handle_vorbehalt(game_type, player):
-            print('accepted') 
+        self.game.handle_vorbehalt(game_type, player)
+        if self.game.game_type is game_type:
+            print('accepted', self.game.game_type) 
         else:
-            print('rejected') 
+            print('rejected', game_type, 'current:', self.game.game_type) 
          
-        # self.game.change_game_type(game_type)
         self.players.update_widgets()
         
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.game: Game = Game()
@@ -66,10 +60,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # self.option_box = OptionBox('GameType :')
         # self.option_box.setStyleSheet("background-color: gainsboro;"
-                                    #   "color: navy;"
-                                    #   "font-weight: bold;"
-                                    #   "border: 1px solid gray;"
-                                    #   "margin-top: 8px")
+        #   "color: navy;"
+        #   "font-weight: bold;"
+        #   "border: 1px solid gray;"
+        #   "margin-top: 8px")
 
         # self.option_box.game_type_changed.connect(self.game_type_changed)
         # layout.addWidget(self.option_box, 2, 10)
@@ -80,7 +74,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def on_new_game_clicked(self):
         self.game.new_game()
         self.players.update_widgets()
-        # self.option_box.new_game()
 
 
 if __name__ == '__main__':
