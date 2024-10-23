@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, unique
+from functools import cached_property
 
 
 @unique
@@ -23,7 +24,6 @@ class CardFace(Enum):
 class PLayCard:
     _family: CardFamily
     _face: CardFace
-    _db_id: int
     image_path: str = 'E:/User/Projects/Python Doko/Images/'
     
     @property
@@ -34,11 +34,11 @@ class PLayCard:
     def face(self):
         return self._face
 
-    @property
+    @cached_property
     def db_id(self):
-        return self._db_id
+        return self._family.value * 10 + self._face.value
 
-    @property
+    @cached_property
     def image(self):
         return f'{self.image_path}{self._family.name.capitalize()}' + \
                 f'_{self.face.name.capitalize()}.gif'
@@ -46,10 +46,8 @@ class PLayCard:
     def __post_init__(self):
         if not isinstance(self._family, CardFamily):
             raise ValueError('family muss Kartenfamile sein (KREUZ, PIK, ... ) ')
-        if not isinstance(self.face, CardFace):
+        if not isinstance(self._face, CardFace):
             raise ValueError('face muss Kartengesicht sein (AS, ZEHN, ... ) ')
-        if not isinstance(self.db_id, int):
-            raise ValueError('db_id muss eine Ganzzahl sein')
 
     def __str__(self) -> str:
         return f'{self._family.name.capitalize()}-{self.face.name.capitalize()}'

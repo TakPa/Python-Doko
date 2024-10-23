@@ -24,7 +24,7 @@ class GameType(Enum):
 
     @property
     def is_normal_game(self) -> bool:
-        return self == GameType.NORMAL or self == GameType.HOCHZEIT 
+        return self is GameType.NORMAL or self is GameType.HOCHZEIT 
         
     @property
     def is_solo(self) -> bool:
@@ -35,25 +35,9 @@ class GameType(Enum):
         return self is GameType.ABGABE or self is GameType.SCHMEISSEN 
         
 
-class DokoCard:
+class DokoCard(PLayCard):
     __slots__ = ('_priority', '_is_trumpf', '_karte')
 
-    @property
-    def family(self):
-        return self._karte._family
-    
-    @property
-    def face(self):
-        return self._karte.face
-    
-    @property
-    def db_id(self):
-        return self._karte.db_id
-    
-    @property
-    def image(self):
-        return self._karte.image
-    
     @property
     def is_re_dame(self):
         return self.family is CardFamily.KREUZ and self.face is CardFace.DAME
@@ -75,32 +59,29 @@ class DokoCard:
         self._is_trumpf = value
 
     def __init__(self, _family: CardFamily, _face: CardFace) -> None:
-        # super().__init__(_family, _face)
-        self._karte = PLayCard(_family, _face, _family.value * 10 + _face.value)
+        super().__init__(_family, _face)
         self._priority: int = 0
         self._is_trumpf: bool = False
         self.switch_gametype(GameType.NORMAL)
     
     def switch_gametype_normal(self):
-        if self.family == CardFamily.HERZ and self.face == CardFace.ZEHN:
+        if self.family is CardFamily.HERZ and self.face is CardFace.ZEHN:
             return GamePriority.DULLE.value
-        if self.face == CardFace.DAME:
+        if self.face is CardFace.DAME:
             return GamePriority.DAME.value
-        if self.face == CardFace.BUBE:
+        if self.face is CardFace.BUBE:
             return GamePriority.BUBE.value
-        if self.family == CardFamily.KARO:
+        if self.family is CardFamily.KARO:
             return GamePriority.TRUMPF.value
         return 0
             
     def switch_gametype_buben_solo(self):
-        if self.face == CardFace.BUBE:
-            return GamePriority.BUBE.value
-        return 0
-    
+        return GamePriority.BUBE.value \
+            if self.face is CardFace.BUBE else 0 
+        
     def switch_gametype_damen_solo(self):
-        if self.face == CardFace.DAME:
-            return GamePriority.DAME.value
-        return 0
+        return GamePriority.DAME.value \
+            if self.face is CardFace.DAME else 0 
 
     def switch_gametype(self, gametype=GameType.NORMAL):
         priority = self.db_id
