@@ -56,7 +56,7 @@ class PLayCard:
         if not isinstance(other, type(self)) and not isinstance(other, int):
             return False
         if type(other) is int:
-            return self.db_id == other.db_id
+            return self.db_id == other
         
         return other.db_id == self.db_id
     

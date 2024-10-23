@@ -26,18 +26,19 @@ class Player:
         return self._id
     
 
-class DokoPlayer:
+class DokoPlayer(Player):
 
-    @property
-    def name(self):
-        return self._player.name
+    # @property
+    # def name(self):
+    #     return self.name
 
     @property
     def player_id(self):
-        return self._player.id
+        return self.id
 
     def __init__(self, name: str, player_id: int) -> None:
-        self._player = Player(name, player_id)
+        super().__init__(name, player_id)
+        # self._player = Player(name, player_id)
         self.Deck: PlayerDeck = PlayerDeck()
         self.game_type = GameType.NORMAL
         

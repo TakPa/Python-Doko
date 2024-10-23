@@ -48,7 +48,7 @@ class Game:
             _player.init_new_game()
             # player.Deck.clear()
             for i in range(10):
-                index = _player.player_id * 10 + i
+                index = _player.id * 10 + i
                 _player.Deck.append(self._full_deck[index])
             _player.change_game_type(GameType.NORMAL)
             _player.Deck.sort(reverse=True)

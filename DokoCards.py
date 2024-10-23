@@ -34,10 +34,9 @@ class GameType(Enum):
     def is_abbruch(self) -> bool:
         return self is GameType.ABGABE or self is GameType.SCHMEISSEN 
         
-
 class DokoCard(PLayCard):
-    __slots__ = ('_priority', '_is_trumpf', '_karte')
-
+    __slots__ = ('_priority', '_is_trumpf')
+    
     @property
     def is_re_dame(self):
         return self.family is CardFamily.KREUZ and self.face is CardFace.DAME
